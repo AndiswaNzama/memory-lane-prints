@@ -74,7 +74,6 @@ def upload_image():
             file,
             folder='memory-lane-prints',
             resource_type='image',
-            transformation=[{'quality': 'auto', 'fetch_format': 'auto'}],
         )
     except Exception as e:
         return jsonify({'error': f'Upload failed: {str(e)}'}), 500
