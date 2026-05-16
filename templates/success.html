@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmed | Memory Lane Prints{% endblock %}
+
+{% block content %}
+<section class="result-page">
+  <div class="container container-sm">
+    <div class="result-card success-card">
+      <div class="result-icon">
+        <i data-lucide="check-circle"></i>
+      </div>
+      <h1>Order Confirmed</h1>
+      <div class="result-ref">Order reference: {{ order.order_number }}</div>
+      <p>
+        Thank you, <strong>{{ order.customer_name.split()[0] }}</strong>.
+        We've received your order and payment. Our team will begin work on your
+        <strong>{{ order.get_package_info().get('name', '') }}</strong> right away.
+      </p>
+      <p>
+        A confirmation will be sent to <strong>{{ order.customer_email }}</strong>,
+        followed by a digital preview for your approval before we go to print.
+      </p>
+      <div class="result-steps">
+        <div class="result-step active-step"><i data-lucide="check"></i> Order received</div>
+        <div class="result-step"><i data-lucide="arrow-right"></i> Design preview sent to you</div>
+        <div class="result-step"><i data-lucide="arrow-right"></i> Print and production</div>
+        <div class="result-step"><i data-lucide="arrow-right"></i> Delivered to your door</div>
+      </div>
+      <div style="margin-top:2.5rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="{{ url_for('main.track', order=order.order_number) }}" class="btn btn-gold">
+          <i data-lucide="search"></i> Track This Order
+        </a>
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline">Back to Home</a>
+        <a href="{{ url_for('orders.new_order') }}" class="btn btn-primary">Order Another Book</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}FAQ | Memory Lane Prints{% endblock %}
+
+{% block head %}
+<style>
+  .faq-section { padding: 4rem 0 5rem; }
+  .faq-section h1 { font-family: var(--font-serif); font-size: 2.25rem; margin-bottom: .5rem; color: var(--brown-900); }
+  .faq-section .subtitle { color: var(--gray-400); font-size: .9rem; margin-bottom: 3rem; }
+  .faq-category { margin-bottom: 3rem; }
+  .faq-category h2 { font-size: .7rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 1.25rem; padding-bottom: .5rem; border-bottom: 1px solid var(--beige-200); }
+  .faq-item { border-bottom: 1px solid var(--beige-100); }
+  .faq-question { width: 100%; background: none; border: none; padding: 1.1rem 0; text-align: left; font-family: var(--font-serif); font-size: 1.05rem; color: var(--brown-800); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .faq-question:hover { color: var(--brown-900); }
+  .faq-question svg { flex-shrink: 0; transition: transform .2s; color: var(--gold); }
+  .faq-question[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .faq-answer { font-size: .9rem; color: var(--gray-500); line-height: 1.8; padding: 0 0 1.1rem; display: none; }
+  .faq-answer a { color: var(--gold-dark); text-decoration: underline; }
+  .faq-answer ul { padding-left: 1.25rem; margin-top: .5rem; }
+  .faq-answer ul li { margin-bottom: .35rem; }
+  .faq-item.open .faq-answer { display: block; }
+  .faq-contact { background: var(--beige-50); border: 1px solid var(--beige-200); padding: 2.5rem; text-align: center; margin-top: 3rem; }
+  .faq-contact h3 { font-family: var(--font-serif); font-size: 1.4rem; color: var(--brown-900); margin-bottom: .5rem; }
+  .faq-contact p { color: var(--gray-400); font-size: .9rem; margin-bottom: 1.5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero page-hero-sm">
+  <div class="container">
+    <h1>Frequently Asked Questions</h1>
+    <p>Everything you need to know about your Memory Lane Prints book</p>
+  </div>
+</section>
+
+<section class="faq-section">
+  <div class="container container-sm">
+
+    <div class="faq-category">
+      <h2>Ordering</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          How do I place an order?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer">
+          Choose your package, upload your photos, fill in your details, and complete payment via PayFast.
+          You'll receive a confirmation email with your order reference number straight away.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          Can I change my order after placing it?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer">
+          Once payment is confirmed, production begins immediately, so we cannot accept changes.
+          Please review your photos, personalisation text, and delivery address carefully before paying.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          Can I order a book as a gift?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer">
+          Absolutely! Just enter the recipient's delivery address at checkout.
+          If you'd like gift wrapping, add it as an add-on when selecting your package.
+          You can also add a personal message on the opening or closing page.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="faq-category">
+      <h2>Photos</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          What photo quality do I need?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer">
+          For the best print quality, we recommend photos that are at least 1MB in size.
+          Most modern smartphone photos work perfectly. We accept JPG, PNG, HEIC, and WEBP formats.
+          If a photo is too low resolution to print well, we'll contact you before proceeding.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          How many photos can I include?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer">
+          It depends on your package:
+          <ul>
+            <li><strong>Mini Memories</strong> (24 pages): up to 30 photos</li>
+            <li><strong>Signature Storybook</strong> (32–40 pages): up to 50 photos</li>
+            <li><strong>Luxury Keepsake</strong> (50+ pages): up to 80 photos</li>
+          </ul>
+          If you add extra pages, you can include more. Upload as many as you'd like and we'll curate the best selection.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          Will I see a proof before printing?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer">
+          We don't currently offer digital proofs, but we review every order carefully before printing.
+          If anything looks off with your photos or layout instructions, we'll contact you before proceeding.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="faq-category">
+      <h2>Production &amp; Delivery</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          How long does it take?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer">
+          Most orders are designed, printed, and dispatched within <strong>5–10 business days</strong> of payment.
+          Delivery via courier then takes 2–5 business days depending on your location.
+          You'll receive an email with your tracking number as soon as your book is dispatched.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          Do you deliver everywhere in South Africa?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer">
+          Yes, we deliver nationwide via Pudo and Paxi courier networks, which cover all major towns and cities across South Africa.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          How do I track my order?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer">
+          Use the <a href="{{ url_for('main.track') }}">Track Order</a> page and enter your order reference number.
+          You'll see your current status, and once dispatched, your courier tracking number will appear there too.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="faq-category">
+      <h2>Returns &amp; Refunds</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          What if I'm not happy with my book?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer">
+          Because every book is made uniquely for you, we do not accept returns for change of mind.
+          However, if there is a production defect or printing error on our side, please email us at
+          <a href="mailto:hello@memorylaneprints.co.za">hello@memorylaneprints.co.za</a> within 7 days of receiving your book,
+          with photos of the issue. We'll reprint or refund with no hassle.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          My book arrived damaged. What do I do?
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer">
+          We're so sorry to hear that. Please take photos of the damage and email them to
+          <a href="mailto:hello@memorylaneprints.co.za">hello@memorylaneprints.co.za</a> within 7 days.
+          Include your order number and we'll sort it out quickly.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="faq-contact">
+      <h3>Still have a question?</h3>
+      <p>We're happy to help. Reach us by email or WhatsApp.</p>
+      <a href="mailto:hello@memorylaneprints.co.za" class="btn btn-primary">
+        Email Us
+      </a>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Leave a Review | Memory Lane Prints{% endblock %}
+
+{% block content %}
+
+<section class="page-hero page-hero-sm">
+  <div class="container">
+    <h1>Share Your Experience</h1>
+    <p>We'd love to hear what you think of your photo book</p>
+  </div>
+</section>
+
+<section class="review-section">
+  <div class="container container-sm">
+
+    {% if blocked %}
+    <div class="result-card" style="text-align:center; padding:3rem;">
+      <i data-lucide="clock" style="width:48px;height:48px;stroke-width:1;color:var(--gold);display:block;margin:0 auto 1rem;"></i>
+      <h2 style="font-family:var(--font-serif); margin-bottom:.75rem;">Not quite yet</h2>
+      <p style="color:var(--brown-600);">Reviews open once your order has been delivered. Check back after you've received your book!</p>
+      <a href="{{ url_for('main.track', order=order.order_number) }}" class="btn btn-outline" style="margin-top:1.5rem;">Track My Order</a>
+    </div>
+
+    {% elif already_submitted %}
+    <div class="result-card" style="text-align:center; padding:3rem;">
+      <i data-lucide="check-circle" style="width:48px;height:48px;stroke-width:1;color:var(--gold);display:block;margin:0 auto 1rem;"></i>
+      <h2 style="font-family:var(--font-serif); margin-bottom:.75rem;">Already submitted</h2>
+      <p style="color:var(--brown-600);">You've already left a review for this order. Thank you!</p>
+      <a href="{{ url_for('main.index') }}" class="btn btn-outline" style="margin-top:1.5rem;">Back to Home</a>
+    </div>
+
+    {% else %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}
+    {% endwith %}
+
+    <div class="review-card">
+
+      <div class="review-order-ref">
+        <i data-lucide="package"></i>
+        <span>{{ order.get_package_info().get('name', order.package) }}</span>
+        <span class="review-order-number">{{ order.order_number }}</span>
+      </div>
+
+      <form method="POST" enctype="multipart/form-data" action="{{ url_for('main.review', order_number=order.order_number) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+        <!-- Star rating -->
+        <div class="review-field">
+          <label class="review-label">Your Rating <span class="review-required">*</span></label>
+          <div class="star-rating" role="group" aria-label="Star rating">
+            {% for i in range(5, 0, -1) %}
+            <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" required />
+            <label for="star{{ i }}" aria-label="{{ i }} star{{ 's' if i != 1 }}">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Review text -->
+        <div class="review-field">
+          <label class="review-label" for="review-text">Your Review <span class="review-required">*</span></label>
+          <textarea id="review-text" name="text" rows="5" required
+            placeholder="Tell us about your experience: the quality, the process, how it felt to hold the finished book…"
+            class="review-textarea"></textarea>
+          <p class="review-hint">Be honest! Your feedback helps future customers and helps us improve.</p>
+        </div>
+
+        <!-- Photo proof -->
+        <div class="review-field">
+          <label class="review-label" for="proof-photo">Photo of Your Book <span class="review-optional">(optional)</span></label>
+          <div class="review-upload-area" id="reviewUploadArea">
+            <i data-lucide="camera"></i>
+            <p>Tap to add a photo of your book</p>
+            <span>JPG, PNG or HEIC · max 10MB</span>
+            <input type="file" id="proof-photo" name="proof_photo"
+                   accept=".jpg,.jpeg,.png,.heic,.webp"
+                   style="position:absolute;inset:0;opacity:0;cursor:pointer;" />
+          </div>
+          <div class="review-photo-preview" id="reviewPhotoPreview" style="display:none;">
+            <img id="reviewPreviewImg" src="" alt="Your photo preview" />
+            <button type="button" class="review-remove-photo" id="reviewRemovePhoto">
+              <i data-lucide="x"></i> Remove
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-large" style="width:100%; margin-top:.5rem;">
+          <i data-lucide="send"></i> Submit Review
+        </button>
+
+      </form>
+    </div>
+
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const input    = document.getElementById('proof-photo');
+  const area     = document.getElementById('reviewUploadArea');
+  const preview  = document.getElementById('reviewPhotoPreview');
+  const img      = document.getElementById('reviewPreviewImg');
+  const removeBtn= document.getElementById('reviewRemovePhoto');
+
+  if (input) {
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        img.src = e.target.result;
+        area.style.display = 'none';
+        preview.style.display = 'flex';
+        lucide.createIcons();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    removeBtn.addEventListener('click', () => {
+      input.value = '';
+      img.src = '';
+      preview.style.display = 'none';
+      area.style.display = 'flex';
+    });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Track Your Order | Memory Lane Prints{% endblock %}
+
+{% block content %}
+
+<section class="page-hero page-hero-sm">
+  <div class="container">
+    <h1>Track Your Order</h1>
+    <p>Enter your order reference to see the latest status</p>
+  </div>
+</section>
+
+<section class="track-section">
+  <div class="container container-sm">
+
+    <!-- Search form -->
+    <form class="track-form" action="{{ url_for('main.track') }}" method="GET">
+      <div class="track-input-wrap">
+        <input type="text" name="order"
+               value="{{ order_number }}"
+               placeholder="e.g. MLP-A1B2C3D4"
+               class="track-input"
+               autocomplete="off"
+               spellcheck="false" />
+        <button type="submit" class="btn btn-primary">
+          <i data-lucide="search"></i> Track
+        </button>
+      </div>
+    </form>
+
+    {% if error %}
+    <div class="track-result">
+      <div class="track-not-found">
+        <i data-lucide="search-x"></i>
+        <p>{{ error }}</p>
+      </div>
+    </div>
+
+    {% elif order %}
+    <div class="track-result">
+      <div class="track-card">
+
+        <div class="track-header">
+          <div>
+            <div class="track-ref">{{ order.order_number }}</div>
+            <div class="track-pkg">{{ order.get_package_info().get('name', order.package) }}</div>
+          </div>
+          <span class="track-badge track-badge-{{ order.status }}">
+            {{ order.status | replace('_', ' ') | title }}
+          </span>
+        </div>
+
+        <!-- Timeline -->
+        {% set all_steps = [
+          ('awaiting_payment', 'Payment Pending',    'clock'),
+          ('paid',             'Payment Received',   'check-circle'),
+          ('processing',       'In Production',      'printer'),
+          ('ready_for_delivery','Ready to Ship',     'package'),
+          ('shipped',          'On Its Way',         'truck'),
+          ('delivered',        'Delivered',          'home'),
+        ] %}
+        {% set status_order = ['awaiting_payment','paid','processing','ready_for_delivery','shipped','delivered'] %}
+        {% set current_idx  = status_order.index(order.status) if order.status in status_order else -1 %}
+
+        {% if order.status != 'cancelled' %}
+        <div class="track-timeline">
+          {% for step_key, step_label, step_icon in all_steps %}
+          {% set step_idx = loop.index0 %}
+          <div class="track-step {{ 'done' if step_idx < current_idx else ('current' if step_idx == current_idx else 'upcoming') }}">
+            <div class="track-step-dot">
+              <i data-lucide="{{ step_icon }}"></i>
+            </div>
+            <div class="track-step-label">{{ step_label }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="track-cancelled">
+          <i data-lucide="x-circle"></i>
+          <p>This order was cancelled. Please <a href="{{ url_for('orders.new_order') }}">place a new order</a> or <a href="mailto:hello@memorylaneprints.co.za">contact us</a> if you have questions.</p>
+        </div>
+        {% endif %}
+
+        <!-- Delivery estimate -->
+        {% if order.status in ['paid', 'processing'] %}
+        <div class="track-estimate">
+          <i data-lucide="calendar"></i>
+          <span>Expected to dispatch within 5–10 business days of payment</span>
+        </div>
+        {% elif order.status == 'shipped' %}
+        <div class="track-estimate">
+          <i data-lucide="calendar"></i>
+          <span>Courier delivery typically takes 2–5 business days</span>
+        </div>
+        {% endif %}
+
+        <!-- Courier info if shipped -->
+        {% if order.courier and order.tracking_number and order.status in ['shipped','delivered'] %}
+        <div class="track-courier">
+          <i data-lucide="truck"></i>
+          <span><strong>{{ order.courier | upper }}</strong>: {{ order.tracking_number }}</span>
+          {% if order.courier == 'pudo' %}
+          <a href="https://www.pudo.co.za/track/{{ order.tracking_number }}" target="_blank" rel="noopener">
+            Track on Pudo <i data-lucide="external-link"></i>
+          </a>
+          {% elif order.courier == 'paxi' %}
+          <a href="https://www.paxi.co.za/track" target="_blank" rel="noopener">
+            Track on Paxi <i data-lucide="external-link"></i>
+          </a>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="track-footer">
+          <span>Order placed {{ order.created_at.strftime('%d %B %Y') }}</span>
+          <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+            {% if order.status == 'delivered' and not order.review %}
+            <a href="{{ url_for('main.review', order_number=order.order_number) }}"
+               class="btn btn-gold btn-sm">
+              <i data-lucide="star"></i> Leave a Review
+            </a>
+            {% elif order.review %}
+            <span style="font-size:.75rem; color:var(--gray-400); display:flex; align-items:center; gap:.3rem;">
+              <i data-lucide="check" style="width:12px;height:12px;"></i> Review submitted
+            </span>
+            {% endif %}
+            <a href="{{ url_for('orders.new_order') }}" class="btn btn-outline btn-sm">Order Another Book</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    {% elif order_number %}
+    {# handled by error above #}
+    {% endif %}
+
+    <p class="track-help">
+      Your order reference starts with <strong>MLP-</strong> and was shown on your confirmation page and receipt.
+      Need help? <a href="mailto:hello@memorylaneprints.co.za">Email us</a>{% if whatsapp_number %} or <a href="https://wa.me/{{ whatsapp_number }}" target="_blank">WhatsApp us</a>{% endif %}.
+    </p>
+
+  </div>
+</section>
+
+{% endblock %}

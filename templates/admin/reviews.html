@@ -1,0 +1,115 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Reviews{% endblock %}
+
+{% block content %}
+
+{% macro star_row(rating) %}
+<span class="review-stars-admin">
+  {% for i in range(1, 6) %}
+  <svg viewBox="0 0 24 24" width="13" height="13"
+       fill="{{ '#C9A84C' if i <= rating else '#E8D5B0' }}">
+    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+  </svg>
+  {% endfor %}
+</span>
+{% endmacro %}
+
+<!-- Pending -->
+<div class="card" style="margin-bottom:2rem;">
+  <div class="card-header">
+    <h2>Awaiting Approval
+      {% if pending %}<span style="background:var(--gold);color:var(--brown-900);font-size:.7rem;padding:.15rem .55rem;border-radius:20px;font-weight:600;margin-left:.5rem;">{{ pending|length }}</span>{% endif %}
+    </h2>
+  </div>
+
+  {% if pending %}
+  <div style="display:flex; flex-direction:column; gap:0;">
+    {% for r in pending %}
+    <div style="padding:1.5rem; border-bottom:var(--border); display:grid; grid-template-columns:1fr auto; gap:1.5rem; align-items:start;">
+      <div>
+        <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:.5rem; flex-wrap:wrap;">
+          {{ star_row(r.rating) }}
+          <span style="font-size:.75rem; color:var(--gray-400);">
+            {{ r.order.customer_name }} &middot; {{ r.order.order_number }} &middot; {{ r.created_at.strftime('%d %b %Y') }}
+          </span>
+        </div>
+        <p style="font-size:.875rem; color:var(--brown-700); line-height:1.7; margin-bottom:.85rem;">{{ r.text }}</p>
+        {% if r.photo_url %}
+        <a href="{{ r.photo_url }}" target="_blank">
+          <img src="{{ r.photo_url }}" alt="Proof photo"
+               style="width:90px;height:90px;object-fit:cover;border:var(--border);display:block;" />
+        </a>
+        {% else %}
+        <span style="font-size:.75rem; color:var(--gray-400); font-style:italic;">No photo submitted</span>
+        {% endif %}
+      </div>
+      <div style="display:flex; flex-direction:column; gap:.5rem; align-items:flex-end;">
+        <form action="{{ url_for('admin.approve_review', review_id=r.id) }}" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <button type="submit" class="btn btn-gold btn-sm">
+            <i data-lucide="check"></i> Approve
+          </button>
+        </form>
+        <form action="{{ url_for('admin.reject_review', review_id=r.id) }}" method="POST"
+              onsubmit="return confirm('Delete this review?')">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <button type="submit" class="btn btn-outline btn-sm" style="color:#991B1B; border-color:#FCA5A5;">
+            <i data-lucide="trash-2"></i> Delete
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="padding:2.5rem; text-align:center; color:var(--gray-400);">
+    <i data-lucide="inbox" style="width:36px;height:36px;stroke-width:1;display:block;margin:0 auto .75rem;color:var(--beige-300);"></i>
+    <p>No reviews waiting for approval.</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Approved -->
+<div class="card">
+  <div class="card-header">
+    <h2>Live on Website <span style="font-size:.85rem;font-weight:300;color:var(--gray-400);">({{ approved|length }})</span></h2>
+  </div>
+
+  {% if approved %}
+  <div style="display:flex; flex-direction:column; gap:0;">
+    {% for r in approved %}
+    <div style="padding:1.25rem 1.5rem; border-bottom:var(--border); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:center;">
+      <div>
+        <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:.35rem; flex-wrap:wrap;">
+          {{ star_row(r.rating) }}
+          <span style="font-size:.75rem; color:var(--gray-400);">
+            {{ r.order.customer_name }} &middot; {{ r.order.order_number }}
+          </span>
+          {% if r.photo_url %}
+          <a href="{{ r.photo_url }}" target="_blank"
+             style="font-size:.7rem; color:var(--gold-dark); display:inline-flex; align-items:center; gap:.25rem;">
+            <i data-lucide="image" style="width:11px;height:11px;"></i> Photo
+          </a>
+          {% endif %}
+        </div>
+        <p style="font-size:.8rem; color:var(--brown-600); line-height:1.6;">{{ r.text[:180] }}{% if r.text|length > 180 %}…{% endif %}</p>
+      </div>
+      <form action="{{ url_for('admin.reject_review', review_id=r.id) }}" method="POST"
+            onsubmit="return confirm('Remove this approved review from the website?')">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" class="btn btn-outline btn-sm" style="color:#991B1B; border-color:#FCA5A5; white-space:nowrap;">
+          <i data-lucide="x"></i> Remove
+        </button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="padding:2.5rem; text-align:center; color:var(--gray-400);">
+    <i data-lucide="star" style="width:36px;height:36px;stroke-width:1;display:block;margin:0 auto .75rem;color:var(--beige-300);"></i>
+    <p>No approved reviews yet. Approve reviews above to show them on the website.</p>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

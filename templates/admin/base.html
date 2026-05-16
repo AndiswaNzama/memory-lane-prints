@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Admin | Memory Lane Prints{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --beige-50:  #FDFAF5;
+      --beige-100: #F5ECD8;
+      --beige-200: #E8D5B0;
+      --beige-300: #D4B882;
+      --gold:      #C9A84C;
+      --gold-dark: #9E7F2E;
+      --gold-light:#EAD9A8;
+      --brown-700: #5C4422;
+      --brown-800: #3D2D15;
+      --brown-900: #22180A;
+      --gray-400:  #9C8E7E;
+      --gray-500:  #7A6E60;
+      --border: 1px solid #E8D5B0;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans:  'Jost', system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); background: #F7F2EA; color: var(--brown-800); font-size: 14px; font-weight: 300; display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar { width: 240px; background: var(--brown-900); flex-shrink: 0; display: flex; flex-direction: column; min-height: 100vh; position: sticky; top: 0; }
+    .sidebar-brand { padding: 2rem 1.5rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .sidebar-brand strong { display: block; font-family: var(--font-serif); font-size: 1.1rem; color: var(--beige-100); margin-bottom: .2rem; }
+    .sidebar-brand span { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(245,236,216,.4); }
+    .sidebar-nav { padding: 1.5rem 0; flex: 1; }
+    .sidebar-nav a { display: flex; align-items: center; gap: .75rem; padding: .75rem 1.5rem; color: rgba(245,236,216,.6); font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; transition: all .15s; }
+    .sidebar-nav a:hover { color: var(--beige-100); background: rgba(255,255,255,.04); }
+    .sidebar-nav a.active { color: var(--gold); background: rgba(201,168,76,.08); border-left: 2px solid var(--gold); }
+    .sidebar-nav a [data-lucide] { width: 15px; height: 15px; flex-shrink: 0; }
+    .sidebar-footer { padding: 1.5rem; border-top: 1px solid rgba(255,255,255,.08); }
+    .sidebar-footer a { color: rgba(245,236,216,.4); font-size: .75rem; text-decoration: none; display: flex; align-items: center; gap: .5rem; }
+    .sidebar-footer a:hover { color: var(--beige-200); }
+    .sidebar-footer a [data-lucide] { width: 13px; height: 13px; }
+
+    /* Main */
+    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .topbar { background: var(--beige-50); border-bottom: var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .topbar h1 { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 500; color: var(--brown-900); }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; font-size: .8rem; color: var(--gray-400); }
+    .content { padding: 2rem; flex: 1; }
+
+    /* Flash */
+    .flash { padding: .85rem 1.25rem; border: var(--border); margin-bottom: 1.25rem; font-size: .875rem; }
+    .flash-error   { background: #FEF2E8; border-color: #D4A06A; color: #7A4020; }
+    .flash-success { background: var(--beige-100); border-color: var(--gold); color: var(--brown-700); }
+
+    /* Cards */
+    .card { background: var(--beige-50); border: var(--border); }
+    .card-header { padding: 1.25rem 1.5rem; border-bottom: var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .card-header h2 { font-family: var(--font-serif); font-size: 1.15rem; font-weight: 500; }
+    .card-body { padding: 1.5rem; }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .55rem 1.25rem; font-family: var(--font-sans); font-size: .75rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; border: 1px solid transparent; cursor: pointer; transition: all .2s; text-decoration: none; }
+    .btn [data-lucide] { width: 13px; height: 13px; }
+    .btn-primary { background: var(--brown-800); color: var(--beige-100); border-color: var(--brown-800); }
+    .btn-primary:hover { background: var(--brown-900); color: var(--beige-100); text-decoration: none; }
+    .btn-gold { background: var(--gold); color: var(--brown-900); border-color: var(--gold); }
+    .btn-gold:hover { background: var(--gold-dark); color: #fff; text-decoration: none; }
+    .btn-outline { background: transparent; color: var(--brown-700); border-color: var(--beige-300); }
+    .btn-outline:hover { background: var(--beige-100); text-decoration: none; }
+    .btn-sm { padding: .4rem .9rem; font-size: .7rem; }
+
+    /* Status badges */
+    .badge { display: inline-flex; align-items: center; gap: .35rem; padding: .25rem .75rem; font-size: .7rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+    .badge [data-lucide] { width: 10px; height: 10px; }
+    .badge-awaiting_payment { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .badge-paid             { background: #ECFDF5; color: #065F46; border: 1px solid #6EE7B7; }
+    .badge-processing       { background: var(--beige-100); color: var(--brown-700); border: var(--border); }
+    .badge-ready_for_delivery { background: #EFF6FF; color: #1E40AF; border: 1px solid #93C5FD; }
+    .badge-shipped          { background: #F5F3FF; color: #5B21B6; border: 1px solid #C4B5FD; }
+    .badge-delivered        { background: #F0FDF4; color: #166534; border: 1px solid #86EFAC; }
+    .badge-cancelled        { background: #FEF2F2; color: #991B1B; border: 1px solid #FCA5A5; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; }
+    th { padding: .75rem 1rem; text-align: left; font-size: .7rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--gray-400); background: var(--beige-100); border-bottom: var(--border); }
+    td { padding: .9rem 1rem; border-bottom: var(--border); vertical-align: middle; font-size: .875rem; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--beige-50); }
+    td a { color: var(--brown-800); font-weight: 400; }
+    td a:hover { color: var(--gold-dark); }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 0; border-bottom: var(--border); margin-bottom: 1.5rem; overflow-x: auto; }
+    .tab { padding: .75rem 1.25rem; font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gray-400); cursor: pointer; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; transition: all .15s; display: flex; align-items: center; gap: .5rem; }
+    .tab:hover { color: var(--brown-800); text-decoration: none; }
+    .tab.active { color: var(--brown-900); border-bottom-color: var(--gold); }
+    .tab-count { background: var(--beige-200); color: var(--brown-700); padding: .1rem .45rem; font-size: .65rem; border-radius: 20px; font-weight: 500; }
+    .tab.active .tab-count { background: var(--gold-light); color: var(--brown-800); }
+
+    /* Forms */
+    label.field-label { display: block; font-size: .7rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--gray-400); margin-bottom: .4rem; }
+    select, input[type="text"] { width: 100%; padding: .65rem .9rem; border: var(--border); background: #fff; font-family: var(--font-sans); font-size: .875rem; color: var(--brown-900); outline: none; transition: border-color .15s; }
+    select:focus, input[type="text"]:focus { border-color: var(--beige-400); }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; }
+
+    /* Detail blocks */
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; border: var(--border); }
+    .detail-block { background: var(--beige-50); padding: 1.5rem; border-right: var(--border); }
+    .detail-block:nth-child(even) { border-right: none; }
+    .detail-block h3 { font-family: var(--font-sans); font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--gray-400); margin-bottom: .85rem; font-weight: 500; }
+    .detail-block p { font-size: .875rem; color: var(--brown-700); line-height: 1.7; }
+    .detail-block strong { color: var(--brown-900); font-weight: 500; }
+    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: .75rem; }
+    .photo-thumb { aspect-ratio: 1; overflow: hidden; border: var(--border); }
+    .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .package-summary strong { display: block; color: var(--brown-900); font-weight: 500; }
+    .package-summary__meta { font-size: .75rem; color: var(--gray-400); margin-top: .2rem; }
+    .photo-summary { display: flex; align-items: center; gap: .75rem; }
+    .photo-summary__stack { display: flex; align-items: center; }
+    .photo-summary__stack img {
+      width: 34px;
+      height: 34px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--beige-50);
+      margin-left: -8px;
+      background: var(--beige-100);
+    }
+    .photo-summary__stack img:first-child { margin-left: 0; }
+    .photo-summary span { font-size: .8rem; color: var(--brown-700); }
+
+    /* Courier info */
+    .courier-badge { display: inline-flex; align-items: center; gap: .5rem; padding: .3rem .85rem; font-size: .75rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; border: var(--border); background: var(--beige-100); color: var(--brown-700); }
+
+    @media (max-width: 960px) {
+      body { display: block; }
+      .sidebar { width: 100%; min-height: auto; position: static; }
+      .main { width: 100%; }
+      .content { padding: 1rem; }
+      .topbar { padding: 1rem; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .detail-block { border-right: none; border-bottom: var(--border); }
+      .detail-block:last-child { border-bottom: none; }
+      .photo-summary { min-width: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <strong>Memory Lane Prints</strong>
+      <span>Admin Panel</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">
+        <i data-lucide="layout-dashboard"></i> Orders
+      </a>
+      <a href="{{ url_for('admin.catalog') }}" class="{{ 'active' if request.endpoint == 'admin.catalog' }}">
+        <i data-lucide="package"></i> Packages &amp; Prices
+      </a>
+      <a href="{{ url_for('admin.reviews') }}" class="{{ 'active' if request.endpoint in ('admin.reviews',) }}">
+        <i data-lucide="star"></i> Reviews
+        {% set pending_count = pending_reviews_count() %}
+        {% if pending_count %}<span style="background:var(--gold);color:var(--brown-900);font-size:.6rem;padding:.1rem .4rem;border-radius:20px;font-weight:600;margin-left:.25rem;">{{ pending_count }}</span>{% endif %}
+      </a>
+      <a href="{{ url_for('admin.customers') }}" class="{{ 'active' if request.endpoint == 'admin.customers' }}">
+        <i data-lucide="users"></i> Customers
+      </a>
+      <a href="{{ url_for('admin.coupons') }}" class="{{ 'active' if request.endpoint in ('admin.coupons',) }}">
+        <i data-lucide="tag"></i> Discount Codes
+      </a>
+      <a href="{{ url_for('admin.admin_gallery') }}" class="{{ 'active' if request.endpoint in ('admin.admin_gallery',) }}">
+        <i data-lucide="image"></i> Gallery
+      </a>
+      <a href="{{ url_for('admin.newsletter') }}" class="{{ 'active' if request.endpoint in ('admin.newsletter',) }}">
+        <i data-lucide="mail"></i> Newsletter
+      </a>
+      <a href="{{ url_for('admin.popia_register') }}" class="{{ 'active' if request.endpoint == 'admin.popia_register' }}">
+        <i data-lucide="shield-check"></i> POPIA Register
+      </a>
+      <a href="{{ url_for('admin.settings') }}" class="{{ 'active' if request.endpoint == 'admin.settings' }}">
+        <i data-lucide="settings"></i> Settings
+      </a>
+      <a href="{{ url_for('main.index') }}" target="_blank">
+        <i data-lucide="external-link"></i> View Website
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="{{ url_for('admin.logout') }}">
+        <i data-lucide="log-out"></i> Sign out
+      </a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+      <div class="topbar-right">
+        <i data-lucide="user" style="width:14px;height:14px;"></i> Andiswa
+      </div>
+    </div>
+
+    <div class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

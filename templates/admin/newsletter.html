@@ -1,0 +1,63 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Newsletter{% endblock %}
+
+{% block content %}
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+  <div>
+    <div style="font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gray-400); margin-bottom:.25rem;">Active subscribers</div>
+    <div style="font-family:var(--font-serif); font-size:2rem; color:var(--brown-900); line-height:1;">{{ active_count }}</div>
+  </div>
+  <a href="{{ url_for('admin.export_newsletter') }}" class="btn btn-outline btn-sm">
+    <i data-lucide="download"></i> Export active list
+  </a>
+</div>
+
+<div class="card">
+  {% if subs %}
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Source</th>
+        <th>Subscribed</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sub in subs %}
+      <tr>
+        <td>{{ sub.email }}</td>
+        <td>{{ sub.name or '—' }}</td>
+        <td style="font-size:.75rem; color:var(--gray-400);">{{ sub.source or 'footer' }}</td>
+        <td style="font-size:.8rem; color:var(--gray-400);">{{ sub.subscribed_at.strftime('%d %b %Y') if sub.subscribed_at else '—' }}</td>
+        <td>
+          {% if sub.is_active %}
+          <span style="font-size:.7rem; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:#065F46; background:#ECFDF5; border:1px solid #6EE7B7; padding:.2rem .6rem;">Active</span>
+          {% else %}
+          <span style="font-size:.7rem; font-weight:500; letter-spacing:.08em; text-transform:uppercase; color:#991B1B; background:#FEF2F2; border:1px solid #FCA5A5; padding:.2rem .6rem;">Unsubscribed</span>
+          {% endif %}
+        </td>
+        <td>
+          <form action="{{ url_for('admin.toggle_subscriber', sub_id=sub.id) }}" method="POST" style="margin:0;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button type="submit" class="btn btn-outline btn-sm">
+              {{ 'Unsubscribe' if sub.is_active else 'Re-subscribe' }}
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div style="padding:3rem 2rem; text-align:center; color:var(--gray-400);">
+    <i data-lucide="mail" style="width:40px;height:40px;stroke-width:1;display:block;margin:0 auto 1rem;color:var(--beige-300);"></i>
+    <p>No subscribers yet. The signup form is in the website footer.</p>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

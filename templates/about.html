@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Our Story | Memory Lane Prints{% endblock %}
+
+{% block head %}
+<style>
+  .about-hero { padding: 5rem 0 3rem; text-align: center; }
+  .about-hero h1 { font-family: var(--font-serif); font-size: 2.75rem; font-weight: 300; color: var(--brown-900); margin-bottom: 1rem; }
+  .about-hero p { font-size: 1.05rem; color: var(--gray-400); max-width: 520px; margin: 0 auto; line-height: 1.8; font-weight: 300; }
+  .about-story { padding: 4rem 0; }
+  .about-story .container { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .about-story p { font-size: .95rem; color: var(--gray-500); line-height: 1.9; margin-bottom: 1.25rem; }
+  .about-story h2 { font-family: var(--font-serif); font-size: 2rem; color: var(--brown-900); font-weight: 300; margin-bottom: 1.5rem; }
+  .about-image-placeholder { background: var(--beige-100); border: 1px solid var(--beige-200); aspect-ratio: 4/5; display: flex; align-items: center; justify-content: center; }
+  .about-image-placeholder span { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gray-400); }
+  .about-photo { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; }
+  .values-section { padding: 4rem 0 5rem; background: var(--cream); border-top: 1px solid var(--beige-200); }
+  .values-section h2 { font-family: var(--font-serif); font-size: 1.75rem; text-align: center; color: var(--brown-900); font-weight: 300; margin-bottom: 3rem; }
+  .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+  .value-card { text-align: center; padding: 2rem 1.5rem; }
+  .value-card .icon { width: 40px; height: 40px; margin: 0 auto 1rem; color: var(--gold); }
+  .value-card h3 { font-family: var(--font-serif); font-size: 1.1rem; color: var(--brown-800); margin-bottom: .6rem; }
+  .value-card p { font-size: .85rem; color: var(--gray-400); line-height: 1.7; }
+  .about-cta { padding: 4rem 0; text-align: center; }
+  .about-cta h2 { font-family: var(--font-serif); font-size: 1.75rem; color: var(--brown-900); margin-bottom: .75rem; font-weight: 300; }
+  .about-cta p { color: var(--gray-400); margin-bottom: 2rem; font-size: .95rem; }
+  @media (max-width: 768px) {
+    .about-story .container { grid-template-columns: 1fr; gap: 2rem; }
+    .about-image-placeholder { aspect-ratio: 3/2; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="about-hero">
+  <div class="container">
+    <h1>Turning Moments<br>into Memories</h1>
+    <p>Memory Lane Prints was born from a simple belief: your best photos deserve more than a phone screen.</p>
+  </div>
+</section>
+
+<section class="about-story">
+  <div class="container">
+    <div>
+      <h2>Our Story</h2>
+      <p>
+        Memory Lane Prints was founded by Andiswa Nzama, a South African creative who grew tired of watching
+        precious family moments sit forgotten in camera rolls. After experiencing the joy of holding a beautifully
+        printed photo book for the first time, she knew she wanted to bring that feeling to others.
+      </p>
+      <p>
+        What started as a passion project quickly grew into a full business, built on the belief that
+        every family, every couple, every milestone deserves to be preserved in print.
+      </p>
+      <p>
+        Based in South Africa and delivering nationwide, Memory Lane Prints handcrafts each book with care.
+        From the moment you upload your first photo to the day your book arrives at your door,
+        we are with you every step of the way.
+      </p>
+    </div>
+    {% if about_photo_url %}
+    <img src="{{ about_photo_url }}" alt="Andiswa Nzama, founder of Memory Lane Prints" class="about-photo" />
+    {% else %}
+    <div class="about-image-placeholder">
+      <span>Upload your photo in Admin Settings</span>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="values-section">
+  <div class="container">
+    <h2>What We Stand For</h2>
+    <div class="values-grid">
+
+      <div class="value-card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+        </svg>
+        <h3>Made with Love</h3>
+        <p>Every book is designed personally for you. No templates, no shortcuts. Just care.</p>
+      </div>
+
+      <div class="value-card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
+        <h3>Quality You Can Feel</h3>
+        <p>Premium paper, rich colours, and durable covers, built to last a lifetime.</p>
+      </div>
+
+      <div class="value-card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        <h3>Proudly South African</h3>
+        <p>Designed and dispatched in South Africa, delivered to your door anywhere in the country.</p>
+      </div>
+
+      <div class="value-card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <h3>Fast Turnaround</h3>
+        <p>Most books are designed, printed, and dispatched within 5–10 business days.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="about-cta">
+  <div class="container">
+    <h2>Ready to preserve your memories?</h2>
+    <p>Choose a package and upload your photos and we take care of the rest.</p>
+    <a href="{{ url_for('orders.new_order') }}" class="btn btn-primary btn-large">
+      Start Your Book &rarr;
+    </a>
+  </div>
+</section>
+
+{% endblock %}

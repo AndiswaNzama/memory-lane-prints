@@ -1,0 +1,309 @@
+{% extends "admin/base.html" %}
+{% block page_title %}{{ order.order_number }}{% endblock %}
+
+{% block content %}
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+  <div style="display:flex; align-items:center; gap:1rem;">
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline btn-sm">
+      <i data-lucide="arrow-left"></i> All Orders
+    </a>
+    <span class="badge badge-{{ order.status }}">{{ order.status | replace('_', ' ') | title }}</span>
+  </div>
+  <div style="font-size:.8rem; color:var(--gray-400);">
+    Placed {{ order.created_at.strftime('%d %B %Y at %H:%M') }}
+  </div>
+</div>
+
+<!-- Top info grid -->
+<div class="detail-grid" style="margin-bottom:1.5px;">
+  <div class="detail-block">
+    <h3>Customer</h3>
+    <p>
+      <strong>{{ order.customer_name }}</strong><br>
+      {{ order.customer_email }}<br>
+      {{ order.customer_phone }}
+    </p>
+  </div>
+  <div class="detail-block">
+    <h3>Delivery Address</h3>
+    <p style="white-space:pre-line;">{{ order.delivery_address }}</p>
+  </div>
+  <div class="detail-block">
+    <h3>Package</h3>
+    {% set package_info = packages.get(order.package, {}) %}
+    <p>
+      <strong>{{ package_info.get('name', order.package) }}</strong><br>
+      <span style="font-size:.8rem; color:var(--gray-400);">{{ package_info.get('description','') }}</span>
+    </p>
+    {% if package_info.get('price') %}
+    <div style="margin-top:.85rem; font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:var(--brown-900);">
+      R{{ '%.2f'|format(package_info.get('price', 0)) }}
+    </div>
+    {% endif %}
+    {% if order.addons %}
+    <div style="margin-top:.85rem;">
+      <div style="font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:var(--gray-400); margin-bottom:.4rem;">Selected Add-ons</div>
+      {% for key in order.addons %}
+        {% if key in addons %}
+        <div style="font-size:.8rem; color:var(--gray-500); padding:.25rem 0;">
+          + {{ addons[key].name }}, R{{ '%.2f'|format(addons[key].price) }}
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="margin-top:.85rem; font-size:.8rem; color:var(--gray-400);">No add-ons selected.</div>
+    {% endif %}
+  </div>
+  <div class="detail-block">
+    <h3>Order Total</h3>
+    <p style="font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--brown-900); font-weight:500;">R{{ '%.2f'|format(order.total) }}</p>
+    {% if order.payfast_payment_id %}
+    <p style="margin-top:.5rem; font-size:.75rem; color:var(--gray-400);">PayFast ID: {{ order.payfast_payment_id }}</p>
+    {% endif %}
+  </div>
+</div>
+
+{% if order.special_notes or order.is_gift %}
+<div class="detail-grid" style="margin-bottom:1.5px; border-top:none;">
+  {% if order.special_notes %}
+  <div class="detail-block" style="{{ 'border-right:none;' if not order.is_gift }} grid-column:{{ '1/-1' if not order.is_gift }};">
+    <h3>Special Notes</h3>
+    <p>{{ order.special_notes }}</p>
+  </div>
+  {% endif %}
+  {% if order.is_gift %}
+  <div class="detail-block" style="border-right:none;">
+    <h3 style="display:flex; align-items:center; gap:.5rem;"><i data-lucide="gift" style="width:15px;height:15px;color:var(--gold-dark);"></i> Gift Order</h3>
+    {% if order.gift_message %}
+    <p style="white-space:pre-line;">{{ order.gift_message }}</p>
+    {% else %}
+    <p style="color:var(--gray-400); font-size:.85rem;">No gift message provided.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if order.cover_title or order.cover_subtitle or order.preface_message or order.closing_message %}
+<div class="detail-grid" style="margin-bottom:1.5rem; border-top:none;">
+  {% if order.cover_title or order.cover_subtitle %}
+  <div class="detail-block">
+    <h3>Cover Page</h3>
+    {% if order.cover_title %}<p><strong>Title:</strong> {{ order.cover_title }}</p>{% endif %}
+    {% if order.cover_subtitle %}<p style="margin-top:.4rem;"><strong>Subtitle:</strong> {{ order.cover_subtitle }}</p>{% endif %}
+  </div>
+  {% endif %}
+  {% if order.preface_message %}
+  <div class="detail-block">
+    <h3>Opening Page</h3>
+    <p style="white-space:pre-line;">{{ order.preface_message }}</p>
+  </div>
+  {% endif %}
+  {% if order.closing_message %}
+  <div class="detail-block" style="{% if not order.preface_message %}grid-column:2{% endif %}; border-right:none;">
+    <h3>Closing Page</h3>
+    <p style="white-space:pre-line;">{{ order.closing_message }}</p>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
+<!-- Photos -->
+<div class="card" style="margin-bottom:1.5rem;">
+  <div class="card-header">
+    <h2>Photos <span style="font-size:.85rem; font-weight:300; color:var(--gray-400);">({{ order.images | length }} uploaded)</span></h2>
+  </div>
+  <div class="card-body">
+    {% if order.images %}
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+      <p style="font-size:.85rem; color:var(--gray-400); margin:0;">
+        Click any image to open the full uploaded version.
+      </p>
+    </div>
+    <div class="photo-grid">
+      {% for img in order.images %}
+      <div style="display:flex; flex-direction:column; gap:0; border:var(--border); overflow:hidden;">
+        <a href="{{ img.cloudinary_url }}" target="_blank" style="display:block; aspect-ratio:1; overflow:hidden;" title="{{ img.original_filename }}">
+          <img src="{{ img.cloudinary_url }}" alt="{{ img.original_filename }}" loading="lazy"
+               style="width:100%; height:100%; object-fit:cover; display:block;" />
+        </a>
+        {% if img.caption %}
+        <div style="padding:.4rem .5rem; font-size:.75rem; color:var(--brown-700); background:var(--beige-50); border-top:var(--border); line-height:1.4;">
+          {{ img.caption }}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p style="color:var(--gray-400);">No photos uploaded.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Update Order -->
+<div class="card">
+  <div class="card-header">
+    <h2>Update Order</h2>
+  </div>
+  <div class="card-body">
+    <form action="{{ url_for('admin.update_order', order_number=order.order_number) }}" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div class="form-grid" style="margin-bottom:1.5rem;">
+
+        <div>
+          <label class="field-label">Order Status</label>
+          <select name="status">
+            {% for key, label in statuses %}
+            <option value="{{ key }}" {{ 'selected' if order.status == key }}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label class="field-label">Courier</label>
+          <select name="courier">
+            <option value="">Not assigned</option>
+            {% for key, label in couriers %}
+            <option value="{{ key }}" {{ 'selected' if order.courier == key }}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label class="field-label">Tracking Number</label>
+          <input type="text" name="tracking_number"
+                 value="{{ order.tracking_number or '' }}"
+                 placeholder="e.g. PD123456789ZA" />
+        </div>
+
+        <div style="grid-column:1/-1;">
+          <label class="field-label">Internal Notes</label>
+          <textarea name="admin_notes" rows="3"
+            style="width:100%; padding:.65rem .9rem; border:var(--border); background:#fff; font-family:var(--font-sans); font-size:.875rem; color:var(--brown-900); resize:vertical; outline:none;"
+            placeholder="Private notes — visible only in admin…">{{ order.admin_notes or '' }}</textarea>
+        </div>
+
+      </div>
+
+      {% if order.courier and order.tracking_number %}
+      <div style="background:var(--beige-100); border:var(--border); padding:1rem 1.25rem; margin-bottom:1.5rem; font-size:.875rem; display:flex; gap:1.5rem; flex-wrap:wrap;">
+        <span><strong>Courier:</strong> {{ order.courier | upper }}</span>
+        <span><strong>Tracking:</strong> {{ order.tracking_number }}</span>
+        {% if order.courier == 'pudo' %}
+        <a href="https://www.pudo.co.za/track/{{ order.tracking_number }}" target="_blank" style="color:var(--gold-dark); font-size:.8rem; display:flex; align-items:center; gap:.35rem;">
+          <i data-lucide="external-link"></i> Track on Pudo
+        </a>
+        {% elif order.courier == 'paxi' %}
+        <a href="https://www.paxi.co.za/track" target="_blank" style="color:var(--gold-dark); font-size:.8rem; display:flex; align-items:center; gap:.35rem;">
+          <i data-lucide="external-link"></i> Track on Paxi
+        </a>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary">
+        <i data-lucide="save"></i> Save Changes
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Quick actions -->
+{% if order.status == 'awaiting_payment' %}
+<div class="card" style="margin-top:1.5rem; border-color:#FCD34D; background:#FFFBEB;">
+  <div class="card-body" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+    <div>
+      <p style="font-size:.875rem; color:#92400E; margin:0; font-weight:500;">Payment not received</p>
+      <p style="font-size:.75rem; color:#92400E; margin-top:.25rem; opacity:.75;">
+        Send a friendly reminder to complete their order.
+        {% if order.reminder_sent_at %}
+        Last sent {{ order.reminder_sent_at.strftime('%d %b at %H:%M') }}.
+        {% endif %}
+      </p>
+    </div>
+    <form action="{{ url_for('admin.send_reminder', order_number=order.order_number) }}" method="POST" style="margin:0;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <button type="submit" class="btn btn-gold btn-sm">
+        <i data-lucide="mail"></i> Send Payment Reminder
+      </button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+{% if order.status == 'delivered' and not order.review %}
+<div class="card" style="margin-top:1.5rem; border-color:#6EE7B7; background:#ECFDF5;">
+  <div class="card-body" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+    <div>
+      <p style="font-size:.875rem; color:#065F46; margin:0; font-weight:500;">Order delivered — no review yet</p>
+      <p style="font-size:.75rem; color:#065F46; margin-top:.25rem; opacity:.75;">Ask the customer to share their experience.</p>
+    </div>
+    <form action="{{ url_for('admin.send_review_request', order_number=order.order_number) }}" method="POST" style="margin:0;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <button type="submit" class="btn btn-sm" style="background:#065F46; color:#fff; border-color:#065F46;">
+        <i data-lucide="star"></i> Request Review
+      </button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<!-- Print Checklist -->
+{% set checklist_items = [
+  ('photos_reviewed',   'Photos reviewed and quality checked'),
+  ('layout_designed',   'Layout designed'),
+  ('sent_to_print',     'Sent to print'),
+  ('quality_checked',   'Print quality checked'),
+  ('packaged',          'Packaged and ready'),
+] %}
+{% set checked_items = order.print_checklist | fromjson if order.print_checklist else [] %}
+<div class="card" style="margin-top:1.5rem;">
+  <div class="card-header">
+    <h2 style="font-size:.95rem; display:flex; align-items:center; gap:.5rem;">
+      <i data-lucide="check-square" style="width:15px;height:15px;color:var(--gold-dark);"></i>
+      Production Checklist
+    </h2>
+  </div>
+  <div class="card-body">
+    <form action="{{ url_for('admin.update_checklist', order_number=order.order_number) }}" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div style="display:flex; flex-direction:column; gap:.75rem; margin-bottom:1.25rem;">
+        {% for key, label in checklist_items %}
+        <label style="display:flex; align-items:center; gap:.75rem; font-size:.875rem; color:var(--brown-700); cursor:pointer;">
+          <input type="checkbox" name="checklist" value="{{ key }}" {{ 'checked' if key in checked_items }}
+                 style="accent-color:var(--gold-dark); width:15px; height:15px; flex-shrink:0;" />
+          <span style="{{ 'text-decoration:line-through; color:var(--gray-400);' if key in checked_items }}">{{ label }}</span>
+        </label>
+        {% endfor %}
+      </div>
+      <button type="submit" class="btn btn-outline btn-sm">
+        <i data-lucide="save"></i> Save Checklist
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Danger zone -->
+<div class="card" style="margin-top:1.5rem; border-color:#FCA5A5;">
+  <div class="card-header" style="background:#FEF2F2;">
+    <h2 style="color:#991B1B; font-size:.95rem;">Danger Zone</h2>
+  </div>
+  <div class="card-body" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+    <div>
+      <p style="font-size:.875rem; color:var(--brown-700); margin:0;">Permanently delete this order and all uploaded photos.</p>
+      <p style="font-size:.75rem; color:var(--gray-400); margin-top:.25rem;">This cannot be undone.</p>
+    </div>
+    <form action="{{ url_for('admin.delete_order', order_number=order.order_number) }}" method="POST"
+          onsubmit="return confirm('Delete order {{ order.order_number }}? This cannot be undone.');">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <button type="submit" class="btn" style="background:#DC2626; color:#fff; border-color:#DC2626;">
+        <i data-lucide="trash-2"></i> Delete Order
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Discount Codes{% endblock %}
+
+{% block content %}
+
+<!-- Create coupon form -->
+<div class="card" style="max-width:640px; margin-bottom:2rem;">
+  <div class="card-header"><h2>Create Discount Code</h2></div>
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('admin.create_coupon') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.25rem;">
+        <div>
+          <label class="field-label" for="code">Code</label>
+          <input type="text" id="code" name="code" placeholder="e.g. WELCOME10" style="text-transform:uppercase;" required />
+        </div>
+        <div>
+          <label class="field-label">Discount Type</label>
+          <select name="discount_type">
+            <option value="percent">Percentage (%)</option>
+            <option value="fixed">Fixed Amount (R)</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="discount_value">Discount Value</label>
+          <input type="number" id="discount_value" name="discount_value" min="0" step="0.01" placeholder="e.g. 10 for 10% or 100 for R100" required />
+        </div>
+        <div>
+          <label class="field-label" for="min_order">Minimum Order (R)</label>
+          <input type="number" id="min_order" name="min_order" min="0" step="1" placeholder="0 = no minimum" />
+        </div>
+        <div>
+          <label class="field-label" for="uses_left">Max Uses</label>
+          <input type="number" id="uses_left" name="uses_left" min="1" step="1" placeholder="Leave blank for unlimited" />
+        </div>
+        <div>
+          <label class="field-label" for="expires_at">Expiry Date</label>
+          <input type="date" id="expires_at" name="expires_at" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <i data-lucide="plus"></i> Create Code
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Coupons table -->
+<div class="card">
+  <div class="card-header">
+    <h2>All Codes <span style="font-size:.85rem; font-weight:300; color:var(--gray-400);">({{ coupons | length }})</span></h2>
+  </div>
+  {% if coupons %}
+  <table>
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Discount</th>
+        <th>Min Order</th>
+        <th>Uses Left</th>
+        <th>Expires</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in coupons %}
+      <tr>
+        <td><strong style="letter-spacing:.08em;">{{ c.code }}</strong></td>
+        <td>
+          {% if c.discount_type == 'percent' %}
+            {{ c.discount_value | int }}% off
+          {% else %}
+            R{{ '%.0f'|format(c.discount_value) }} off
+          {% endif %}
+        </td>
+        <td>{{ 'R' ~ c.min_order | int if c.min_order else 'None' }}</td>
+        <td>{{ c.uses_left if c.uses_left is not none else 'Unlimited' }}</td>
+        <td style="font-size:.8rem; color:var(--gray-400);">
+          {{ c.expires_at.strftime('%d %b %Y') if c.expires_at else 'No expiry' }}
+        </td>
+        <td>
+          {% if c.is_active %}
+          <span style="color:#065F46; font-size:.75rem; font-weight:500;">Active</span>
+          {% else %}
+          <span style="color:#991B1B; font-size:.75rem; font-weight:500;">Inactive</span>
+          {% endif %}
+        </td>
+        <td style="display:flex; gap:.5rem;">
+          <form method="POST" action="{{ url_for('admin.toggle_coupon', coupon_id=c.id) }}" style="margin:0;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button type="submit" class="btn btn-outline btn-sm">
+              {{ 'Deactivate' if c.is_active else 'Activate' }}
+            </button>
+          </form>
+          <form method="POST" action="{{ url_for('admin.delete_coupon', coupon_id=c.id) }}"
+                onsubmit="return confirm('Delete coupon {{ c.code }}?');" style="margin:0;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button type="submit" class="btn btn-sm" style="background:#FEF2F2; color:#991B1B; border-color:#FCA5A5;">
+              <i data-lucide="trash-2"></i>
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div style="padding:3rem; text-align:center; color:var(--gray-400);">No discount codes yet. Create one above.</div>
+  {% endif %}
+</div>
+
+{% endblock %}

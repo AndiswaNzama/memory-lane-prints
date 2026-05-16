@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Something Went Wrong | Memory Lane Prints{% endblock %}
+
+{% block content %}
+<section class="result-page">
+  <div class="container container-sm">
+    <div class="result-card" style="text-align:center; padding:4rem 2rem;">
+      <div style="font-family:var(--font-serif); font-size:6rem; line-height:1; color:var(--beige-200); margin-bottom:1rem;">500</div>
+      <h1 style="font-family:var(--font-serif); font-size:1.75rem; margin-bottom:1rem;">Something went wrong on our end</h1>
+      <p style="color:var(--brown-600); margin-bottom:2rem;">
+        We've noted the issue and will look into it.<br>
+        Please try again in a moment.
+      </p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">Go to Homepage</a>
+        <a href="mailto:hello@memorylaneprints.co.za" class="btn btn-outline">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

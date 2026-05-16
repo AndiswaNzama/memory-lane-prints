@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login | Memory Lane Prints</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --beige-100: #F5ECD8; --beige-200: #E8D5B0; --gold: #C9A84C;
+      --gold-dark: #9E7F2E; --brown-800: #3D2D15; --brown-900: #22180A;
+      --gray-400: #9C8E7E; --border: 1px solid #E8D5B0;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Jost', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); background: #F7F2EA; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-weight: 300; }
+    .login-box { background: #FDFAF5; border: var(--border); padding: 3rem; width: 380px; }
+    .login-brand { text-align: center; margin-bottom: 2.5rem; }
+    .login-brand strong { display: block; font-family: var(--font-serif); font-size: 1.5rem; color: var(--brown-900); margin-bottom: .25rem; }
+    .login-brand span { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--gray-400); }
+    .flash { padding: .75rem 1rem; border: var(--border); margin-bottom: 1.5rem; font-size: .85rem; background: #FEF2E8; border-color: #D4A06A; color: #7A4020; }
+    label { display: block; font-size: .7rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--gray-400); margin-bottom: .5rem; }
+    input[type="password"] { width: 100%; padding: .8rem 1rem; border: var(--border); background: #fff; font-family: var(--font-sans); font-size: .95rem; color: var(--brown-900); outline: none; transition: border-color .15s; }
+    input[type="password"]:focus { border-color: var(--beige-300); }
+    .form-group { margin-bottom: 1.5rem; }
+    .btn { width: 100%; padding: .85rem; background: var(--brown-800); color: var(--beige-100); border: 1px solid var(--brown-800); font-family: var(--font-sans); font-size: .8rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; transition: background .2s; }
+    .btn:hover { background: var(--brown-900); }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <div class="login-brand">
+      <strong>Memory Lane Prints</strong>
+      <span>Admin Access</span>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}{% for _, message in messages %}<div class="flash">{{ message }}</div>{% endfor %}{% endif %}
+    {% endwith %}
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autofocus required />
+      </div>
+      <button type="submit" class="btn">Sign In</button>
+    </form>
+  </div>
+</body>
+</html>

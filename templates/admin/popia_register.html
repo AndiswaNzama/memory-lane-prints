@@ -1,0 +1,95 @@
+{% extends "admin/base.html" %}
+
+{% block title %}POPIA Consent Register | Admin{% endblock %}
+{% block page_title %}POPIA Consent Register{% endblock %}
+
+{% block content %}
+
+<div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+  <div>
+    <p style="font-size:.8rem; color:var(--gray-400); line-height:1.6; max-width:560px;">
+      This register records every customer who provided explicit POPIA consent when placing an order.
+      It is retained as evidence of lawful processing under the Protection of Personal Information Act, 2013.
+    </p>
+  </div>
+  <div style="display:flex; align-items:center; gap:.75rem;">
+    <form method="get" action="" style="display:flex; gap:.5rem;">
+      <input type="text" name="q" value="{{ search }}" placeholder="Search name, email or order…"
+             style="width:240px; padding:.55rem .9rem; border:var(--border); font-size:.8rem; font-family:var(--font-sans); background:#fff; color:var(--brown-900); outline:none;" />
+      <button type="submit" class="btn btn-outline btn-sm">
+        <i data-lucide="search"></i> Search
+      </button>
+      {% if search %}
+      <a href="{{ url_for('admin.popia_register') }}" class="btn btn-outline btn-sm">Clear</a>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<div style="font-size:.75rem; color:var(--gray-400); margin-bottom:1rem;">
+  {% if search %}
+    {{ entries|length }} result{% if entries|length != 1 %}s{% endif %} for &ldquo;{{ search }}&rdquo;
+  {% else %}
+    {{ entries|length }} consent record{% if entries|length != 1 %}s{% endif %} total
+  {% endif %}
+</div>
+
+<div class="card">
+  {% if entries %}
+  <table>
+    <thead>
+      <tr>
+        <th>Date &amp; Time (UTC)</th>
+        <th>Order</th>
+        <th>Customer Name</th>
+        <th>Email Address</th>
+        <th>IP Address</th>
+        <th>Policy Version</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr>
+        <td style="white-space:nowrap; color:var(--gray-500);">
+          {{ entry.consented_at.strftime('%Y-%m-%d') }}<br>
+          <span style="font-size:.75rem;">{{ entry.consented_at.strftime('%H:%M:%S') }}</span>
+        </td>
+        <td>
+          <a href="{{ url_for('admin.order_detail', order_number=entry.order_number) }}">
+            {{ entry.order_number }}
+          </a>
+        </td>
+        <td>{{ entry.customer_name }}</td>
+        <td style="color:var(--gray-500);">{{ entry.customer_email }}</td>
+        <td style="font-size:.8rem; color:var(--gray-400); font-variant-numeric:tabular-nums;">
+          {{ entry.ip_address or '—' }}
+        </td>
+        <td>
+          <span style="background:var(--beige-100); border:var(--border); padding:.2rem .6rem; font-size:.7rem; letter-spacing:.08em; color:var(--brown-700);">
+            v{{ entry.consent_version }}
+          </span>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div style="padding:3rem; text-align:center; color:var(--gray-400);">
+    <i data-lucide="shield-off" style="width:32px; height:32px; margin-bottom:.75rem; display:block; margin-left:auto; margin-right:auto; opacity:.4;"></i>
+    {% if search %}
+      No records match your search.
+    {% else %}
+      No consent records yet. They will appear here once customers complete an order.
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<div style="margin-top:1.25rem; padding:1rem 1.25rem; background:var(--beige-50); border:var(--border); font-size:.78rem; color:var(--gray-400); line-height:1.7;">
+  <strong style="color:var(--brown-700);">POPIA compliance note:</strong>
+  Each record confirms the customer's name, email, order reference, IP address, date and time of consent,
+  and the version of the Privacy Policy in effect at the time. This log should be retained for a minimum
+  of 3 years in accordance with your data retention policy.
+</div>
+
+{% endblock %}

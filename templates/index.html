@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+
+{% block title %}Memory Lane Prints | Personalized Photo Books, South Africa{% endblock %}
+
+{% block content %}
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-decoration" data-animate="fade" data-delay="100">
+      <div class="hero-decoration-line"></div>
+      <span class="hero-eyebrow">Handcrafted in South Africa</span>
+    </div>
+    <h1 class="hero-title" data-animate data-delay="200">
+      Your memories deserve<br>
+      <em>to be held forever</em>
+    </h1>
+    <p class="hero-sub" data-animate data-delay="320">
+      We transform your favourite digital photos into beautifully printed,
+      professionally designed photo books, because social media was never
+      meant to be your only archive.
+    </p>
+    <div class="hero-actions" data-animate data-delay="420">
+      <a href="{{ url_for('main.packages') }}" class="btn btn-primary">
+        Browse Packages <i data-lucide="arrow-right"></i>
+      </a>
+      <a href="{{ url_for('orders.new_order') }}" class="btn btn-outline">
+        Order Now
+      </a>
+    </div>
+    <div class="hero-scroll" data-animate="fade" data-delay="600">
+      <i data-lucide="chevrons-down"></i>
+      Scroll to discover
+    </div>
+  </div>
+  <div class="hero-visual" data-animate="scale" data-delay="300">
+    <div class="hero-glow"></div>
+    <div class="hero-flowers" aria-hidden="true">
+      <i data-lucide="flower-2" class="hf hf-1"></i>
+      <i data-lucide="flower-2" class="hf hf-2"></i>
+      <i data-lucide="flower"   class="hf hf-3"></i>
+      <i data-lucide="flower-2" class="hf hf-4"></i>
+      <i data-lucide="flower"   class="hf hf-5"></i>
+      <i data-lucide="flower-2" class="hf hf-6"></i>
+    </div>
+    <div class="hero-book-stack">
+      <div class="book book-1">
+        <div class="book-spine"></div>
+        <div class="book-cover"><span>Mini<br>Memories</span></div>
+      </div>
+      <div class="book book-2">
+        <div class="book-spine"></div>
+        <div class="book-cover"><span>Signature<br>Storybook</span></div>
+      </div>
+      <div class="book book-3">
+        <div class="book-spine"></div>
+        <div class="book-cover"><span>Luxury<br>Keepsake</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MARQUEE ========== -->
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <span class="marquee-item"><i data-lucide="book-open"></i> Mini Memories</span>
+    <span class="marquee-item"><i data-lucide="star"></i> Signature Storybook</span>
+    <span class="marquee-item"><i data-lucide="gift"></i> Luxury Keepsake</span>
+    <span class="marquee-item"><i data-lucide="truck"></i> Nationwide Delivery</span>
+    <span class="marquee-item"><i data-lucide="leaf"></i> Eco-Friendly Packaging</span>
+    <span class="marquee-item"><i data-lucide="image"></i> Professional Design</span>
+    <span class="marquee-item"><i data-lucide="heart"></i> Made with Love</span>
+    <span class="marquee-item"><i data-lucide="map-pin"></i> South Africa</span>
+  </div>
+</div>
+
+<!-- ========== STATS STRIP ========== -->
+<div class="stats-strip">
+  <div class="stat-item" data-animate data-delay="0">
+    <span class="stat-number">3</span>
+    <span class="stat-label">Signature Packages</span>
+  </div>
+  <div class="stat-item" data-animate data-delay="80">
+    <span class="stat-number">7 to 10</span>
+    <span class="stat-label">Day Delivery</span>
+  </div>
+  <div class="stat-item" data-animate data-delay="160">
+    <span class="stat-number">50+</span>
+    <span class="stat-label">Pages (Luxury)</span>
+  </div>
+  <div class="stat-item" data-animate data-delay="240">
+    <span class="stat-number">100%</span>
+    <span class="stat-label">Satisfaction Promise</span>
+  </div>
+</div>
+
+<!-- ========== HOW IT WORKS ========== -->
+<section class="how-it-works">
+  <div class="container">
+    <h2 class="section-title" data-animate>How it works</h2>
+    <div class="section-ornament" data-animate="fade" data-delay="100">
+      <i data-lucide="sparkles"></i>
+    </div>
+    <div class="steps" data-stagger="" data-step="120">
+      <div class="step">
+        <div class="step-number">01</div>
+        <div class="step-icon"><i data-lucide="layout-grid"></i></div>
+        <h3>Choose your package</h3>
+        <p>Pick the package that suits your story, from a mini softcover to a luxury layflat gift set.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">02</div>
+        <div class="step-icon"><i data-lucide="upload-cloud"></i></div>
+        <h3>Upload your photos</h3>
+        <p>Send us your favourite images through our secure form. JPG, PNG, HEIC, any format works.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">03</div>
+        <div class="step-icon"><i data-lucide="truck"></i></div>
+        <h3>We print and deliver</h3>
+        <p>We design, print, and courier your book right to your door, beautifully packaged.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PACKAGES ========== -->
+<section class="packages-preview">
+  <div class="container">
+    <h2 class="section-title" data-animate>Our packages</h2>
+    <p class="section-sub" data-animate="fade" data-delay="100">Every package includes professional layout design</p>
+    <div class="package-cards" data-stagger="" data-step="100">
+      {% for key, pkg in packages.items() %}
+      <div class="package-card" style="--pkg-color: {{ pkg.color }}">
+        <div class="package-card-header">
+          <h3>{{ pkg.name }}</h3>
+          <p class="package-desc">{{ pkg.description }}</p>
+        </div>
+        <div class="package-card-price">
+          <span class="price-amount">R{{ pkg.price }}</span>
+        </div>
+        <a href="{{ url_for('orders.new_order', package=key) }}" class="btn btn-package">
+          Order This Package
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="packages-cta" data-animate="fade">
+      <a href="{{ url_for('main.packages') }}" class="btn btn-outline">
+        See full details <i data-lucide="arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== WHY US ========== -->
+<section class="why-us">
+  <div class="container">
+    <h2 class="section-title" data-animate>Why Memory Lane Prints?</h2>
+    <div class="section-ornament" data-animate="fade" data-delay="100">
+      <i data-lucide="sparkles"></i>
+    </div>
+    <div class="features" data-stagger="" data-step="90">
+      <div class="feature">
+        <div class="feature-icon"><i data-lucide="palette"></i></div>
+        <h4>Aesthetic layouts</h4>
+        <p>Each book is thoughtfully designed, not just printed. We craft layouts that feel like a story.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><i data-lucide="gift"></i></div>
+        <h4>Perfect for every occasion</h4>
+        <p>Birthdays, anniversaries, graduations, travels. If you lived it, we can print it.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><i data-lucide="map-pin"></i></div>
+        <h4>Delivered across SA</h4>
+        <p>We ship nationwide via Pudo and Paxi. Gift-ready packaging on every order.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><i data-lucide="leaf"></i></div>
+        <h4>Eco-conscious</h4>
+        <p>We use eco-friendly paper and packaging because memories shouldn't cost the earth.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TESTIMONIALS ========== -->
+<section class="testimonials">
+  <div class="container">
+    <h2 class="section-title" data-animate>What our customers say</h2>
+    <div class="section-ornament" data-animate="fade" data-delay="100">
+      <i data-lucide="sparkles"></i>
+    </div>
+
+    {% if reviews %}
+    <div class="testimonial-grid" data-stagger="" data-step="100">
+      {% for r in reviews %}
+      <div class="testimonial-card" data-animate>
+        <div class="testimonial-stars">
+          {% for i in range(1, 6) %}
+          <svg viewBox="0 0 24 24" width="16" height="16"
+               fill="{{ 'var(--gold)' if i <= r.rating else 'var(--beige-200)' }}">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+          {% endfor %}
+        </div>
+        {% if r.photo_url %}
+        <a href="{{ r.photo_url }}" target="_blank" class="testimonial-photo-link">
+          <img src="{{ r.photo_url }}" alt="Customer photo" class="testimonial-photo" loading="lazy" />
+        </a>
+        {% endif %}
+        <div class="testimonial-quote-mark">&ldquo;</div>
+        <p class="testimonial-text">{{ r.text[:220] }}{% if r.text|length > 220 %}…{% endif %}</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">{{ r.order.customer_name[:2].upper() }}</div>
+          <div>
+            <strong>{{ r.order.customer_name.split()[0] }} {{ r.order.customer_name.split()[-1][0] if r.order.customer_name.split()|length > 1 else '' }}.</strong>
+            <span>Verified Purchase &middot; {{ r.order.get_package_info().get('name', '') }}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- Shown until first approved review comes in -->
+    <div class="testimonial-grid" data-stagger="" data-step="100">
+      <div class="testimonial-card testimonial-placeholder" data-animate>
+        <div class="testimonial-stars">
+          {% for i in range(5) %}<svg viewBox="0 0 24 24" width="16" height="16" fill="var(--gold)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{% endfor %}
+        </div>
+        <div class="testimonial-quote-mark">&ldquo;</div>
+        <p class="testimonial-text">I ordered the Luxury Keepsake for my parents' 40th anniversary and they were in tears. The quality is just stunning. Absolutely worth every cent.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">TM</div>
+          <div><strong>Thandi M.</strong><span>Johannesburg</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card testimonial-placeholder" data-animate>
+        <div class="testimonial-stars">
+          {% for i in range(5) %}<svg viewBox="0 0 24 24" width="16" height="16" fill="var(--gold)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{% endfor %}
+        </div>
+        <div class="testimonial-quote-mark">&ldquo;</div>
+        <p class="testimonial-text">Super easy to order and my Signature Storybook arrived in under a week. The layout design was so thoughtful. I've already ordered another one as a gift!</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">KL</div>
+          <div><strong>Keegan L.</strong><span>Cape Town</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card testimonial-placeholder" data-animate>
+        <div class="testimonial-stars">
+          {% for i in range(5) %}<svg viewBox="0 0 24 24" width="16" height="16" fill="var(--gold)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>{% endfor %}
+        </div>
+        <div class="testimonial-quote-mark">&ldquo;</div>
+        <p class="testimonial-text">I was nervous about uploading my photos but the process was seamless. The Mini Memories book came out perfect for my best friend's birthday. She cried when she opened it!</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">ND</div>
+          <div><strong>Nomsa D.</strong><span>Durban</span></div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- ========== CTA ========== -->
+<section class="cta-banner">
+  <span class="cta-decorative" aria-hidden="true">Memories</span>
+  <div class="container cta-banner-inner">
+    <h2 data-animate="fade">Ready to preserve your memories?</h2>
+    <p data-animate="fade" data-delay="120">Order today. Your book arrives in 7 to 10 business days.</p>
+    <a href="{{ url_for('orders.new_order') }}" class="btn btn-gold btn-large" data-animate data-delay="220">
+      Start Your Order <i data-lucide="arrow-right"></i>
+    </a>
+  </div>
+</section>
+
+{% endblock %}

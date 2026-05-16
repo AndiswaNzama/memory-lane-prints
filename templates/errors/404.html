@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found | Memory Lane Prints{% endblock %}
+
+{% block content %}
+<section class="result-page">
+  <div class="container container-sm">
+    <div class="result-card" style="text-align:center; padding:4rem 2rem;">
+      <div style="font-family:var(--font-serif); font-size:6rem; line-height:1; color:var(--beige-200); margin-bottom:1rem;">404</div>
+      <h1 style="font-family:var(--font-serif); font-size:1.75rem; margin-bottom:1rem;">This page doesn't exist</h1>
+      <p style="color:var(--brown-600); margin-bottom:2rem;">
+        It may have been moved or the link might be wrong.<br>
+        Let's get you back on track.
+      </p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">Go to Homepage</a>
+        <a href="{{ url_for('main.packages') }}" class="btn btn-outline">Browse Packages</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

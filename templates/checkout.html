@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Review Order {{ order.order_number }} | Memory Lane Prints{% endblock %}
+
+{% block content %}
+
+<section class="page-hero page-hero-sm">
+  <div class="container">
+    <h1>Review Your Order</h1>
+    <p>Check everything looks right before you pay</p>
+  </div>
+</section>
+
+<section class="checkout-section">
+  <div class="container container-sm">
+    <div class="card">
+
+      <div class="order-ref">
+        <span>Order Reference</span>
+        <strong>{{ order.order_number }}</strong>
+      </div>
+
+      <div class="order-summary-grid">
+
+        <div class="summary-block">
+          <h3>Package</h3>
+          {% set pkg = packages[order.package] %}
+          <div class="summary-package-name">{{ pkg.name }}</div>
+          <div class="summary-package-desc">{{ pkg.description }}</div>
+          <div class="summary-line">
+            <span>{{ pkg.name }}</span>
+            <span>R{{ pkg.price }}</span>
+          </div>
+          {% if order.addons %}
+            {% for key in order.addons %}
+              {% if key in addons %}
+              <div class="summary-line summary-addon">
+                <span>+ {{ addons[key].name }}</span>
+                <span>+R{{ addons[key].price }}</span>
+              </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          {% if order.discount_amount %}
+          <div class="summary-line summary-addon" style="color:#065F46;">
+            <span>Discount ({{ order.coupon_code }})</span>
+            <span>-R{{ '%.2f'|format(order.discount_amount) }}</span>
+          </div>
+          {% endif %}
+          <div class="summary-total">
+            <span>Total</span>
+            <span>R{{ '%.2f'|format(order.total) }}</span>
+          </div>
+        </div>
+
+        <div class="summary-block">
+          <h3>Delivery Details</h3>
+          <p><strong>{{ order.customer_name }}</strong></p>
+          <p>{{ order.customer_email }}</p>
+          <p>{{ order.customer_phone }}</p>
+          <p style="margin-top:.75rem; white-space: pre-line;">{{ order.delivery_address }}</p>
+        </div>
+
+        {% if order.special_notes %}
+        <div class="summary-block">
+          <h3>Special Notes</h3>
+          <p>{{ order.special_notes }}</p>
+        </div>
+        {% endif %}
+
+        {% if order.cover_title or order.cover_subtitle or order.preface_message or order.closing_message %}
+        <div class="summary-block" style="grid-column:1/-1;">
+          <h3>Page Personalisation</h3>
+          {% if order.cover_title %}
+          <p><strong>Cover title:</strong> {{ order.cover_title }}</p>
+          {% endif %}
+          {% if order.cover_subtitle %}
+          <p><strong>Cover subtitle:</strong> {{ order.cover_subtitle }}</p>
+          {% endif %}
+          {% if order.preface_message %}
+          <p style="margin-top:.5rem;"><strong>Opening page:</strong><br>{{ order.preface_message }}</p>
+          {% endif %}
+          {% if order.closing_message %}
+          <p style="margin-top:.5rem;"><strong>Closing page:</strong><br>{{ order.closing_message }}</p>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="summary-block">
+          <h3>Photos Uploaded</h3>
+          <p>{{ order.images | length }} photo{{ 's' if order.images | length != 1 }} submitted</p>
+          <div class="checkout-preview-grid">
+            {% for img in order.images[:6] %}
+            <div class="checkout-preview-item">
+              <img src="{{ img.cloudinary_url }}" alt="{{ img.original_filename }}" loading="lazy" />
+            </div>
+            {% endfor %}
+            {% if order.images | length > 6 %}
+            <div class="checkout-preview-item more-photos">
+              +{{ order.images | length - 6 }} more
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+
+      <div class="payment-section">
+        <div class="payment-total">
+          <span>Amount to pay:</span>
+          <strong>R{{ '%.2f'|format(order.total) }}</strong>
+        </div>
+        <p class="payment-note">
+          You'll be redirected to PayFast, South Africa's trusted payment gateway.
+          We accept credit/debit cards, EFT, SnapScan, and Zapper.
+        </p>
+        <a href="{{ url_for('payments.initiate', order_number=order.order_number) }}"
+           class="btn btn-primary btn-large btn-full">
+          Pay Securely with PayFast &rarr;
+        </a>
+        <p class="payment-security">
+          <i data-lucide="lock"></i>
+          Secured by PayFast &nbsp;&middot;&nbsp; Your card details are never shared with us
+        </p>
+      </div>
+
+      <div class="checkout-upsell">
+        <div class="checkout-upsell-icon"><i data-lucide="gift"></i></div>
+        <div>
+          <p class="checkout-upsell-title">Know someone who'd love one?</p>
+          <p class="checkout-upsell-sub">Order a second book as a gift while you're here. Each book is designed individually.</p>
+          <a href="{{ url_for('orders.new_order') }}" class="btn btn-outline btn-sm" style="margin-top:.75rem;">
+            Order Another Book &rarr;
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

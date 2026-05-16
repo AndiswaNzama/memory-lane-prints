@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Terms & Conditions | Memory Lane Prints{% endblock %}
+
+{% block head %}
+<style>
+  .terms-section { padding: 4rem 0 5rem; }
+  .terms-section h1 { font-family: var(--font-serif); font-size: 2.25rem; margin-bottom: .5rem; color: var(--brown-900); }
+  .terms-section .subtitle { color: var(--gray-400); font-size: .875rem; margin-bottom: 3rem; }
+  .terms-section h2 { font-family: var(--font-serif); font-size: 1.2rem; color: var(--brown-800); margin: 2.25rem 0 .75rem; }
+  .terms-section p, .terms-section li { font-size: .9rem; color: var(--gray-500); line-height: 1.8; }
+  .terms-section ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+  .terms-section ul li { margin-bottom: .4rem; }
+  .terms-section a { color: var(--gold-dark); text-decoration: underline; }
+  .terms-divider { border: none; border-top: 1px solid var(--beige-200); margin: 2rem 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero page-hero-sm">
+  <div class="container">
+    <h1>Terms &amp; Conditions</h1>
+    <p>Please read these terms carefully before placing an order</p>
+  </div>
+</section>
+
+<section class="terms-section">
+  <div class="container container-sm">
+
+    <p class="subtitle">Last updated: May 2025, Memory Lane Prints, South Africa</p>
+
+    <h2>1. About Us</h2>
+    <p>
+      Memory Lane Prints is a South African business that creates personalised photo books and keepsakes.
+      By placing an order, you agree to these terms and conditions in full.
+      For any questions, contact us at <a href="mailto:hello@memorylaneprints.co.za">hello@memorylaneprints.co.za</a>.
+    </p>
+
+    <hr class="terms-divider">
+
+    <h2>2. Orders</h2>
+    <ul>
+      <li>All orders are subject to acceptance and availability.</li>
+      <li>Submitting an order does not constitute a contract until payment is confirmed.</li>
+      <li>We reserve the right to refuse or cancel any order at our discretion, with a full refund where payment was taken.</li>
+      <li>Order details (photos, personalisation text) cannot be changed after payment is confirmed, as production begins immediately.</li>
+    </ul>
+
+    <hr class="terms-divider">
+
+    <h2>3. Pricing &amp; Payment</h2>
+    <ul>
+      <li>All prices are in South African Rand (ZAR) and include VAT where applicable.</li>
+      <li>Payment is processed securely by PayFast. We do not store your card details.</li>
+      <li>Your order enters production only after payment is confirmed by PayFast.</li>
+    </ul>
+
+    <hr class="terms-divider">
+
+    <h2>4. Production &amp; Turnaround Time</h2>
+    <ul>
+      <li>Standard turnaround is <strong>5–10 business days</strong> from payment confirmation to dispatch.</li>
+      <li>Turnaround times are estimates and may vary during busy periods (holidays, promotions).</li>
+      <li>We will notify you by email when your order is dispatched.</li>
+    </ul>
+
+    <hr class="terms-divider">
+
+    <h2>5. Delivery</h2>
+    <ul>
+      <li>We deliver nationwide across South Africa via Pudo or Paxi courier services.</li>
+      <li>Delivery typically takes <strong>2–5 business days</strong> after dispatch, depending on your location.</li>
+      <li>A tracking number will be emailed to you once your order is dispatched.</li>
+      <li>Memory Lane Prints is not responsible for delays caused by courier services.</li>
+      <li>Please ensure your delivery address is correct at checkout. We cannot be held responsible for failed delivery due to an incorrect address.</li>
+    </ul>
+
+    <hr class="terms-divider">
+
+    <h2>6. Photo Quality</h2>
+    <ul>
+      <li>The quality of your finished book depends on the quality of your uploaded photos.</li>
+      <li>We recommend photos of at least 1MB in size for best print quality.</li>
+      <li>We will not print photos that contain illegal, offensive, or harmful content.</li>
+      <li>By uploading photos, you confirm that you own or have permission to use them.</li>
+    </ul>
+
+    <hr class="terms-divider">
+
+    <h2>7. Returns &amp; Refunds</h2>
+    <ul>
+      <li>Because every book is personalised and printed uniquely for you, we do not accept returns or offer refunds for change of mind.</li>
+      <li>If your book arrives damaged or has a production error (printing defect, wrong content), please contact us within <strong>7 days of receiving it</strong> with photos of the issue. We will reprint or refund at our discretion.</li>
+      <li>Refunds for qualifying claims are processed within 5–10 business days via the original payment method.</li>
+    </ul>
+
+    <hr class="terms-divider">
+
+    <h2>8. Intellectual Property</h2>
+    <ul>
+      <li>You retain full ownership of all photos and content you upload.</li>
+      <li>By submitting an order, you grant Memory Lane Prints a limited licence to use your photos and content solely for producing your order.</li>
+      <li>We will not use your photos for marketing or any other purpose without your explicit consent.</li>
+    </ul>
+
+    <hr class="terms-divider">
+
+    <h2>9. Limitation of Liability</h2>
+    <p>
+      Memory Lane Prints' liability is limited to the value of your order.
+      We are not liable for indirect losses, lost profits, or consequential damages arising from the use of our service.
+    </p>
+
+    <hr class="terms-divider">
+
+    <h2>10. Privacy</h2>
+    <p>
+      Your personal information is handled in accordance with our
+      <a href="{{ url_for('main.privacy') }}">Privacy Policy</a> and the Protection of Personal Information Act (POPIA).
+    </p>
+
+    <hr class="terms-divider">
+
+    <h2>11. Governing Law</h2>
+    <p>
+      These terms are governed by the laws of the Republic of South Africa.
+      Any disputes will be subject to the jurisdiction of the South African courts.
+    </p>
+
+    <hr class="terms-divider">
+
+    <h2>12. Contact</h2>
+    <p>
+      <strong>Memory Lane Prints</strong><br>
+      Email: <a href="mailto:hello@memorylaneprints.co.za">hello@memorylaneprints.co.za</a><br>
+      South Africa
+    </p>
+
+  </div>
+</section>
+
+{% endblock %}

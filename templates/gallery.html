@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Our Work | Memory Lane Prints{% endblock %}
+
+{% block head %}
+<meta name="description" content="Browse our gallery of personalised photo books handcrafted for South African families, couples, and milestone moments." />
+<style>
+  .gallery-hero { padding: 4rem 0 2.5rem; text-align: center; }
+  .gallery-hero h1 { font-family: var(--font-serif); font-size: 2.5rem; font-weight: 300; color: var(--brown-900); margin-bottom: .75rem; }
+  .gallery-hero p { color: var(--gray-400); font-size: .95rem; max-width: 480px; margin: 0 auto; line-height: 1.8; }
+  .gallery-section { padding: 2rem 0 5rem; }
+  .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
+  .gallery-item { position: relative; overflow: hidden; border: 1px solid var(--beige-200); }
+  .gallery-item img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; transition: transform .4s ease; }
+  .gallery-item:hover img { transform: scale(1.03); }
+  .gallery-caption { padding: .75rem 1rem; background: var(--warm-white); font-size: .8rem; color: var(--brown-700); border-top: 1px solid var(--beige-200); line-height: 1.5; }
+  .gallery-empty { text-align: center; padding: 5rem 0; color: var(--gray-400); }
+  .gallery-cta { text-align: center; padding: 4rem 0 2rem; }
+  .gallery-cta h2 { font-family: var(--font-serif); font-size: 1.75rem; color: var(--brown-900); font-weight: 300; margin-bottom: .75rem; }
+  .gallery-cta p { color: var(--gray-400); font-size: .9rem; margin-bottom: 2rem; }
+  @media (max-width: 600px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; } }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="gallery-hero">
+  <div class="container">
+    <h1>Our Work</h1>
+    <p>A look at some of the books we have created. Every book is designed uniquely for the person who ordered it.</p>
+  </div>
+</section>
+
+<section class="gallery-section">
+  <div class="container">
+    {% if images %}
+    <div class="gallery-grid">
+      {% for img in images %}
+      <div class="gallery-item">
+        <img src="{{ img.cloudinary_url }}" alt="{{ img.caption or 'Memory Lane Prints photo book' }}" loading="lazy" />
+        {% if img.caption %}
+        <div class="gallery-caption">{{ img.caption }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="gallery-empty">
+      <p>Gallery coming soon. Check back after our first orders are delivered.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="gallery-cta">
+  <div class="container">
+    <h2>Ready to create yours?</h2>
+    <p>Every book starts with your photos. We take care of the design, printing, and delivery.</p>
+    <a href="{{ url_for('orders.new_order') }}" class="btn btn-primary btn-large">
+      Start Your Book &rarr;
+    </a>
+  </div>
+</section>
+
+{% endblock %}

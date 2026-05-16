@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(cd \"c:\\\\Users\\\\andis\\\\OneDrive\\\\Projects\\\\Memory Lane\"; $env:FLASK_ENV=\"development\"; .\\\\venv\\\\Scripts\\\\python -m flask --app \"app:create_app\\(\\)\" run --port 5000 2>&1)",
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://127.0.0.1:5000\" -UseBasicParsing; Write-Output \"Status: $\\($r.StatusCode\\)\"; $r.Content | Select-String -Pattern \"Memory Lane|hero|packages\" | Select-Object -First 5)"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Customers{% endblock %}
+
+{% block content %}
+
+<div class="card">
+  <div class="card-header">
+    <h2>All Customers <span style="font-size:.85rem; font-weight:300; color:var(--gray-400);">({{ customers | length }})</span></h2>
+  </div>
+  {% if customers %}
+  <table>
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Orders</th>
+        <th>Total Spent</th>
+        <th>Last Order</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in customers %}
+      <tr>
+        <td>
+          <div style="font-weight:400; color:var(--brown-900);">{{ c.customer_name }}</div>
+          <div style="font-size:.8rem; color:var(--gray-400);">{{ c.customer_email }}</div>
+        </td>
+        <td>
+          <span style="font-family:var(--font-serif); font-size:1.1rem; color:var(--brown-800);">{{ c.order_count }}</span>
+          <span style="font-size:.75rem; color:var(--gray-400); margin-left:.25rem;">order{{ '' if c.order_count == 1 else 's' }}</span>
+        </td>
+        <td style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--brown-900);">
+          R{{ '%.2f'|format(c.total_spend or 0) }}
+        </td>
+        <td style="color:var(--gray-400); font-size:.8rem;">
+          {{ c.last_order.strftime('%d %b %Y') }}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div style="padding:3rem; text-align:center; color:var(--gray-400);">No customers yet.</div>
+  {% endif %}
+</div>
+
+{% endblock %}

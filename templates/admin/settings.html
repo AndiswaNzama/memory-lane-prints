@@ -1,0 +1,278 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Payment Settings{% endblock %}
+
+{% block content %}
+
+<div class="card" style="max-width:640px;">
+  <div class="card-header">
+    <h2>PayFast Configuration</h2>
+  </div>
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('admin.settings') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="form_section" value="payfast" />
+
+      <div style="display:grid; gap:1.25rem; margin-bottom:1.75rem;">
+
+        <div>
+          <label class="field-label">Mode</label>
+          <div style="display:flex; gap:1.5rem; align-items:center; padding:.65rem 0;">
+            <label style="display:flex; align-items:center; gap:.5rem; cursor:pointer; font-size:.875rem; color:var(--brown-700); text-transform:none; letter-spacing:0; font-weight:300;">
+              <input type="checkbox" name="payfast_sandbox" value="1"
+                     {{ 'checked' if sandbox }}
+                     style="width:16px; height:16px; cursor:pointer;" />
+              Sandbox / Test mode
+            </label>
+            <span style="font-size:.75rem; color:var(--gray-400);">
+              Uncheck when you're ready to accept real payments
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <label class="field-label" for="merchant_id">Merchant ID</label>
+          <input type="text" id="merchant_id" name="payfast_merchant_id"
+                 value="{{ merchant_id }}"
+                 placeholder="e.g. 12345678" />
+          <p style="font-size:.72rem; color:var(--gray-400); margin-top:.35rem;">
+            Found in PayFast → Settings → Merchant Details
+          </p>
+        </div>
+
+        <div>
+          <label class="field-label" for="merchant_key">Merchant Key</label>
+          <input type="text" id="merchant_key" name="payfast_merchant_key"
+                 value="{{ merchant_key }}"
+                 placeholder="e.g. 46f0cd694581a" />
+        </div>
+
+        <div>
+          <label class="field-label" for="passphrase">Passphrase</label>
+          <input type="password" id="passphrase" name="payfast_passphrase"
+                 placeholder="Leave blank to keep existing passphrase"
+                 autocomplete="new-password" />
+          <p style="font-size:.72rem; color:var(--gray-400); margin-top:.35rem;">
+            Only fill this in if you want to change it. Leave blank to keep the current one.
+          </p>
+        </div>
+
+        <div>
+          <label class="field-label" for="app_url">Website URL</label>
+          <input type="text" id="app_url" name="app_url"
+                 value="{{ app_url }}"
+                 placeholder="https://your-app.up.railway.app" />
+          <p style="font-size:.72rem; color:var(--gray-400); margin-top:.35rem;">
+            The public URL of this site — used for PayFast return &amp; notify URLs. No trailing slash.
+          </p>
+        </div>
+
+      </div>
+
+      <h3 style="font-family:var(--font-serif); font-size:1.05rem; font-weight:500; color:var(--brown-900); margin:2rem 0 1.25rem; padding-top:1.5rem; border-top:var(--border);">Contact &amp; Social</h3>
+
+      <div style="display:grid; gap:1.25rem; margin-bottom:1.75rem;">
+
+        <div>
+          <label class="field-label" for="whatsapp_number">WhatsApp Number</label>
+          <input type="text" id="whatsapp_number" name="whatsapp_number"
+                 value="{{ whatsapp_number }}"
+                 placeholder="e.g. 27821234567 (include country code, no +)" />
+          <p style="font-size:.72rem; color:var(--gray-400); margin-top:.35rem;">
+            Shown as a floating chat button on the website when filled in.
+          </p>
+        </div>
+
+        <div>
+          <label class="field-label" for="instagram_handle">Instagram Handle</label>
+          <input type="text" id="instagram_handle" name="instagram_handle"
+                 value="{{ instagram_handle }}"
+                 placeholder="e.g. memorylaneprints (without @)" />
+        </div>
+
+        <div>
+          <label class="field-label" for="admin_email">Your Email (for order alerts)</label>
+          <input type="text" id="admin_email" name="admin_email"
+                 value="{{ admin_email }}"
+                 placeholder="e.g. hello@memorylaneprints.co.za" />
+          <p style="font-size:.72rem; color:var(--gray-400); margin-top:.35rem;">
+            Reserved for future email notifications.
+          </p>
+        </div>
+
+      </div>
+
+      <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+        <button type="submit" class="btn btn-primary">
+          <i data-lucide="save"></i> Save Settings
+        </button>
+        <span style="font-size:.75rem; color:var(--gray-400);">
+          Changes take effect immediately
+        </span>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- Email / SMTP Settings -->
+<div class="card" style="max-width:640px; margin-top:2rem;">
+  <div class="card-header">
+    <h2>Email (SMTP)</h2>
+  </div>
+  <div class="card-body">
+    <p style="font-size:.8rem; color:var(--gray-400); margin-bottom:1.5rem; line-height:1.6;">
+      Used to send order confirmations to customers and payment alerts to you.
+      Works with Gmail, SendGrid, or any SMTP provider. Leave blank to disable emails.
+    </p>
+    <form method="POST" action="{{ url_for('admin.settings') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="form_section" value="mail" />
+      <div style="display:grid; gap:1.25rem; margin-bottom:1.75rem;">
+        <div style="display:grid; grid-template-columns:1fr 120px; gap:1rem;">
+          <div>
+            <label class="field-label" for="mail_server">SMTP Server</label>
+            <input type="text" id="mail_server" name="mail_server"
+                   value="{{ mail_server }}" placeholder="smtp.gmail.com" />
+          </div>
+          <div>
+            <label class="field-label" for="mail_port">Port</label>
+            <input type="text" id="mail_port" name="mail_port"
+                   value="{{ mail_port }}" placeholder="587" />
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="mail_username">SMTP Username / Email</label>
+          <input type="text" id="mail_username" name="mail_username"
+                 value="{{ mail_username }}" placeholder="hello@memorylaneprints.co.za" />
+        </div>
+        <div>
+          <label class="field-label" for="mail_password">SMTP Password / App Password</label>
+          <input type="password" id="mail_password" name="mail_password"
+                 placeholder="Leave blank to keep existing"
+                 autocomplete="new-password" />
+          <p style="font-size:.72rem; color:var(--gray-400); margin-top:.35rem;">
+            For Gmail, use an App Password (Google Account → Security → 2FA → App Passwords).
+          </p>
+        </div>
+        <div>
+          <label class="field-label" for="mail_sender_name">Sender Display Name</label>
+          <input type="text" id="mail_sender_name" name="mail_sender_name"
+                 value="{{ mail_sender_name }}" placeholder="Memory Lane Prints" />
+        </div>
+        <div>
+          <label style="display:flex; align-items:center; gap:.5rem; cursor:pointer; font-size:.875rem; color:var(--brown-700); text-transform:none; letter-spacing:0; font-weight:300;">
+            <input type="checkbox" name="mail_use_tls" value="1"
+                   {{ 'checked' if mail_use_tls }}
+                   style="width:16px; height:16px; cursor:pointer;" />
+            Use TLS (recommended — required for Gmail on port 587)
+          </label>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <i data-lucide="save"></i> Save Email Settings
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Change Admin Password -->
+<div class="card" style="max-width:640px; margin-top:2rem;">
+  <div class="card-header">
+    <h2>Change Admin Password</h2>
+  </div>
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('admin.settings') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="form_section" value="password" />
+      <div style="display:grid; gap:1.25rem; margin-bottom:1.75rem;">
+        <div>
+          <label class="field-label" for="current_password">Current Password</label>
+          <input type="password" id="current_password" name="current_password"
+                 autocomplete="current-password" placeholder="Your current password" />
+        </div>
+        <div>
+          <label class="field-label" for="new_password">New Password</label>
+          <input type="password" id="new_password" name="new_password"
+                 autocomplete="new-password" placeholder="At least 8 characters" />
+        </div>
+        <div>
+          <label class="field-label" for="confirm_password">Confirm New Password</label>
+          <input type="password" id="confirm_password" name="confirm_password"
+                 autocomplete="new-password" placeholder="Repeat new password" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <i data-lucide="lock"></i> Update Password
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Order Capacity -->
+<div class="card" style="max-width:640px; margin-top:2rem;">
+  <div class="card-header"><h2>Order Capacity</h2></div>
+  <div class="card-body">
+    <p style="font-size:.8rem; color:var(--gray-400); margin-bottom:1.5rem; line-height:1.6;">
+      Limit how many active orders you can handle at once. When the limit is reached, new customers will see a
+      "fully booked" message instead of the order form. Leave blank to accept unlimited orders.
+    </p>
+    <form method="POST" action="{{ url_for('admin.settings') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="form_section" value="capacity" />
+      <div style="display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap; margin-bottom:1.25rem;">
+        <div style="flex:1; min-width:160px;">
+          <label class="field-label" for="max_active_orders">Max Active Orders</label>
+          <input type="number" id="max_active_orders" name="max_active_orders"
+                 value="{{ max_active_orders }}" min="0" step="1"
+                 placeholder="e.g. 20 (blank = unlimited)" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Save</button>
+    </form>
+  </div>
+</div>
+
+<!-- About Page Photo -->
+<div class="card" style="max-width:640px; margin-top:2rem;">
+  <div class="card-header">
+    <h2>About Page Photo</h2>
+  </div>
+  <div class="card-body">
+    {% if about_photo_url %}
+    <img src="{{ about_photo_url }}" alt="About photo preview"
+         style="width:160px; height:200px; object-fit:cover; border:var(--border); margin-bottom:1.25rem; display:block;" />
+    {% endif %}
+    <form method="POST" action="{{ url_for('admin.settings') }}" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="form_section" value="about_photo" />
+      <div style="margin-bottom:1.25rem;">
+        <label class="field-label" for="about_photo">{{ 'Replace Photo' if about_photo_url else 'Upload Photo' }}</label>
+        <input type="file" id="about_photo" name="about_photo" accept="image/jpeg,image/png,image/webp"
+               style="font-size:.875rem; color:var(--brown-700);" required />
+        <p style="font-size:.72rem; color:var(--gray-400); margin-top:.35rem;">
+          Portrait orientation works best (4:5 ratio). Minimum 800px wide. JPG or PNG.
+        </p>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <i data-lucide="upload"></i> {{ 'Replace Photo' if about_photo_url else 'Upload Photo' }}
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Status indicator -->
+<div style="margin-top:1.5rem; padding:1rem 1.25rem; border:var(--border); background:var(--beige-50); max-width:640px; display:flex; align-items:center; gap:.75rem;">
+  {% if sandbox %}
+  <span style="display:inline-flex; align-items:center; gap:.4rem; background:#FEF3C7; color:#92400E; border:1px solid #FCD34D; padding:.3rem .85rem; font-size:.72rem; font-weight:500; letter-spacing:.08em; text-transform:uppercase;">
+    <i data-lucide="flask-conical" style="width:12px;height:12px;"></i> Sandbox
+  </span>
+  <span style="font-size:.8rem; color:var(--brown-700);">Test mode is on — no real money moves. Use PayFast sandbox cards to test.</span>
+  {% else %}
+  <span style="display:inline-flex; align-items:center; gap:.4rem; background:#ECFDF5; color:#065F46; border:1px solid #6EE7B7; padding:.3rem .85rem; font-size:.72rem; font-weight:500; letter-spacing:.08em; text-transform:uppercase;">
+    <i data-lucide="zap" style="width:12px;height:12px;"></i> Live
+  </span>
+  <span style="font-size:.8rem; color:var(--brown-700);">Live mode — real payments are processed.</span>
+  {% endif %}
+</div>
+
+{% endblock %}

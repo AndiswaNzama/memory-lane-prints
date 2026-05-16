@@ -1,0 +1,74 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Gallery{% endblock %}
+
+{% block content %}
+
+<!-- Upload form -->
+<div class="card" style="max-width:640px; margin-bottom:2rem;">
+  <div class="card-header"><h2>Add to Gallery</h2></div>
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('admin.gallery_upload') }}" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div style="display:grid; gap:1.25rem; margin-bottom:1.25rem;">
+        <div>
+          <label class="field-label" for="photo">Photo</label>
+          <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp"
+                 style="font-size:.875rem; color:var(--brown-700);" required />
+          <p style="font-size:.72rem; color:var(--gray-400); margin-top:.35rem;">JPG or PNG. Will be resized to max 1400px wide.</p>
+        </div>
+        <div>
+          <label class="field-label" for="caption">Caption <span style="font-weight:300; opacity:.6;">(optional)</span></label>
+          <input type="text" id="caption" name="caption" placeholder="e.g. Wedding album — Sandton, 2025" maxlength="200" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <i data-lucide="upload"></i> Add Photo
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Gallery grid -->
+<div class="card">
+  <div class="card-header">
+    <h2>Gallery <span style="font-size:.85rem; font-weight:300; color:var(--gray-400);">({{ images | length }} photos)</span></h2>
+  </div>
+  <div class="card-body">
+    {% if images %}
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:1rem;">
+      {% for img in images %}
+      <div style="border:var(--border); overflow:hidden; {% if not img.is_active %}opacity:.45;{% endif %}">
+        <img src="{{ img.cloudinary_url }}" alt="{{ img.caption or '' }}"
+             style="width:100%; aspect-ratio:4/5; object-fit:cover; display:block;" />
+        {% if img.caption %}
+        <div style="padding:.4rem .6rem; font-size:.75rem; color:var(--brown-700); background:var(--beige-50); border-top:var(--border);">
+          {{ img.caption }}
+        </div>
+        {% endif %}
+        <div style="padding:.5rem .6rem; display:flex; gap:.4rem; border-top:var(--border); background:#fff;">
+          <form method="POST" action="{{ url_for('admin.gallery_toggle', img_id=img.id) }}" style="margin:0; flex:1;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button type="submit" class="btn btn-outline btn-sm" style="width:100%; justify-content:center; font-size:.65rem;">
+              {{ 'Hide' if img.is_active else 'Show' }}
+            </button>
+          </form>
+          <form method="POST" action="{{ url_for('admin.gallery_delete', img_id=img.id) }}"
+                onsubmit="return confirm('Remove this photo from the gallery?');" style="margin:0;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button type="submit" class="btn btn-sm" style="background:#FEF2F2; color:#991B1B; border-color:#FCA5A5;">
+              <i data-lucide="trash-2"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="padding:3rem; text-align:center; color:var(--gray-400);">
+      No photos in the gallery yet. Upload your first one above.
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

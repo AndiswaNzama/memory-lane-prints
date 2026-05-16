@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Thank You | Memory Lane Prints{% endblock %}
+
+{% block content %}
+<section class="result-page">
+  <div class="container container-sm">
+    <div class="result-card success-card" style="text-align:center;">
+      <div class="result-icon">
+        <i data-lucide="heart"></i>
+      </div>
+      <h1>Thank you!</h1>
+      <div class="result-ref">{{ order.order_number }}</div>
+      <p>
+        Your review has been submitted and will appear on our website once approved.
+        We really appreciate you taking the time, it means the world to us. 🌸
+      </p>
+      <div style="margin-top:2rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline">Back to Home</a>
+        <a href="{{ url_for('orders.new_order') }}" class="btn btn-primary">Order Another Book</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

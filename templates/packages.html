@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Packages | Memory Lane Prints{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Our Packages</h1>
+    <p>Handcrafted photo books for every story and every budget</p>
+  </div>
+</section>
+
+<section class="packages-detail">
+  <div class="container">
+
+    <div class="package-detail-cards" data-stagger="" data-step="100">
+
+      <!-- Mini Memories -->
+      <div class="package-detail-card" id="mini">
+        <div class="package-badge">Most Popular</div>
+        <div class="package-detail-header">
+          <h2>{{ packages.mini.name }}</h2>
+          <p class="package-detail-desc">{{ packages.mini.description }}</p>
+          <div class="package-detail-price">R{{ packages.mini.price }}</div>
+        </div>
+        <ul class="package-features">
+          <li class="included"><i data-lucide="check"></i> Softcover binding</li>
+          <li class="included"><i data-lucide="check"></i> 24 pages</li>
+          <li class="included"><i data-lucide="check"></i> Simple, clean layout</li>
+          <li class="included"><i data-lucide="check"></i> Professional design included</li>
+          <li class="included"><i data-lucide="check"></i> Nationwide delivery</li>
+          <li class="not-included"><i data-lucide="minus"></i> Gift box</li>
+          <li class="not-included"><i data-lucide="minus"></i> Layflat binding</li>
+        </ul>
+        <a href="{{ url_for('orders.new_order', package='mini') }}" class="btn btn-primary">Order Mini Memories</a>
+      </div>
+
+      <!-- Signature Storybook -->
+      <div class="package-detail-card" id="signature">
+        <div class="package-badge">Best Value</div>
+        <div class="package-detail-header">
+          <h2>{{ packages.signature.name }}</h2>
+          <p class="package-detail-desc">{{ packages.signature.description }}</p>
+          <div class="package-detail-price">R{{ packages.signature.price }}</div>
+        </div>
+        <ul class="package-features">
+          <li class="included"><i data-lucide="check"></i> Hardcover binding</li>
+          <li class="included"><i data-lucide="check"></i> 32 to 40 pages</li>
+          <li class="included"><i data-lucide="check"></i> Custom, curated layout</li>
+          <li class="included"><i data-lucide="check"></i> Professional design included</li>
+          <li class="included"><i data-lucide="check"></i> Nationwide delivery</li>
+          <li class="included"><i data-lucide="check"></i> Durable hardcover</li>
+          <li class="not-included"><i data-lucide="minus"></i> Gift box</li>
+        </ul>
+        <a href="{{ url_for('orders.new_order', package='signature') }}" class="btn btn-primary">Order Signature Storybook</a>
+      </div>
+
+      <!-- Luxury Keepsake -->
+      <div class="package-detail-card" id="luxury">
+        <div class="package-badge">Premium</div>
+        <div class="package-detail-header">
+          <h2>{{ packages.luxury.name }}</h2>
+          <p class="package-detail-desc">{{ packages.luxury.description }}</p>
+          <div class="package-detail-price">R{{ packages.luxury.price }}</div>
+        </div>
+        <ul class="package-features">
+          <li class="included"><i data-lucide="check"></i> Premium layflat binding</li>
+          <li class="included"><i data-lucide="check"></i> 50+ pages</li>
+          <li class="included"><i data-lucide="check"></i> Fully custom layout</li>
+          <li class="included"><i data-lucide="check"></i> Professional design included</li>
+          <li class="included"><i data-lucide="check"></i> Nationwide delivery</li>
+          <li class="included"><i data-lucide="check"></i> Includes gift box</li>
+          <li class="included"><i data-lucide="check"></i> Seamless page spreads</li>
+        </ul>
+        <a href="{{ url_for('orders.new_order', package='luxury') }}" class="btn btn-primary">Order Luxury Keepsake</a>
+      </div>
+
+    </div>
+
+    <!-- Add-ons -->
+    <div class="addons-section">
+      <h2 class="section-title" data-animate>Optional Add-ons</h2>
+      <p class="section-sub" data-animate="fade" data-delay="100">Customise any package to make it extra special</p>
+      <div class="addon-cards" data-stagger="" data-step="60">
+        {% for key, addon in addons.items() %}
+        <div class="addon-card">
+          <div class="addon-name">{{ addon.name }}</div>
+          <div class="addon-price">+R{{ addon.price }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <div class="ornament"><i data-lucide="sparkles"></i></div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">How long does delivery take? <i data-lucide="plus"></i></button>
+          <div class="faq-answer">
+            <p>Most orders are ready within 5 to 7 business days and delivered within 2 to 3 business days after that, depending on your location.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">What photo formats do you accept? <i data-lucide="plus"></i></button>
+          <div class="faq-answer">
+            <p>We accept JPG, PNG, HEIC (iPhone), and WEBP. For best results, use photos that are at least 1MB each.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Can I see a preview before printing? <i data-lucide="plus"></i></button>
+          <div class="faq-answer">
+            <p>Yes. After placing your order we send you a digital preview via email for your approval before we go to print.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Do you ship outside South Africa? <i data-lucide="plus"></i></button>
+          <div class="faq-answer">
+            <p>We currently ship within South Africa only. Africa-wide delivery is planned for Year 2.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">What payment methods are accepted? <i data-lucide="plus"></i></button>
+          <div class="faq-answer">
+            <p>We accept all major credit/debit cards, EFT, SnapScan, and Zapper via PayFast, South Africa's leading payment gateway.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+      lucide.createIcons();
+    });
+  });
+</script>
+{% endblock %}

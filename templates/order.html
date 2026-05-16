@@ -1,0 +1,560 @@
+{% extends "base.html" %}
+
+{% block title %}Place Your Order | Memory Lane Prints{% endblock %}
+
+{% block head %}
+<style>
+  .package-select-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; border: var(--border); margin-bottom: 2.5rem; }
+  .package-select-card { border-right: var(--border); padding: 1.75rem 1.5rem; cursor: pointer; transition: background .15s; background: var(--warm-white); }
+  .package-select-card:last-child { border-right: none; }
+  .package-select-card:hover { background: var(--beige-50); }
+  .package-select-card.selected { background: var(--beige-100); border-bottom: 2px solid var(--gold); }
+  .package-select-card input[type="radio"] { display: none; }
+  .addon-checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; border: var(--border); margin-top: 1.25rem; }
+  .addon-check-item { display: flex; align-items: center; gap: .85rem; padding: 1rem 1.25rem; cursor: pointer; background: var(--warm-white); border-right: var(--border); transition: background .15s; }
+  .addon-check-item:last-child { border-right: none; }
+  .addon-check-item:hover { background: var(--beige-50); }
+  .addon-check-item input[type="checkbox"] { accent-color: var(--gold-dark); width: 15px; height: 15px; flex-shrink: 0; }
+  .upload-area { border: 1px dashed var(--beige-300); padding: 3rem; text-align: center; cursor: pointer; transition: background .2s; background: var(--cream); }
+  .upload-area:hover, .upload-area.drag-over { background: var(--beige-100); }
+  .upload-area input[type="file"] { display: none; }
+  .upload-area [data-lucide].icon-xl { display: block; margin: 0 auto .75rem; }
+  .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .preview-item { position: relative; border: var(--border); background: var(--warm-white); }
+  .preview-item-thumb { position: relative; aspect-ratio: 1; overflow: hidden; }
+  .preview-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .preview-remove { position: absolute; top: 6px; right: 6px; background: rgba(34,24,10,.7); color: #fff; border: none; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .photo-caption { display: block; width: 100%; border: none; border-top: 1px solid var(--beige-200); padding: .4rem .5rem; font-size: .75rem; font-family: var(--font-sans); color: var(--brown-700); background: transparent; outline: none; box-sizing: border-box; resize: none; }
+  .photo-caption::placeholder { color: var(--gray-400); }
+  .upload-progress { margin-top: .75rem; font-size: .85rem; color: var(--gold-dark); }
+  .order-nav { display: flex; justify-content: space-between; margin-top: 2.5rem; }
+  .section-label { font-size: .7rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 1.25rem; display: block; }
+  .page-customise-section { border: 1px solid var(--beige-200); padding: 1.5rem; margin: 1.75rem 0 0; background: var(--warm-white); }
+  .capacity-banner { background: var(--beige-100); border: 1px solid var(--beige-300); padding: 2.5rem; text-align: center; margin: 2rem 0; }
+  .capacity-banner h2 { font-family: var(--font-serif); font-size: 1.5rem; color: var(--brown-900); margin-bottom: .5rem; font-weight: 400; }
+  .capacity-banner p { font-size: .9rem; color: var(--gray-500); margin-bottom: 1.25rem; }
+  .coupon-section { margin: 1.75rem 0 0; padding: 1.25rem 1.5rem; border: 1px solid var(--beige-200); background: var(--warm-white); }
+  .coupon-row { display: flex; gap: .75rem; margin-top: .6rem; }
+  .coupon-row input { flex: 1; padding: .55rem .85rem; border: var(--border); font-family: var(--font-sans); font-size: .875rem; outline: none; text-transform: uppercase; letter-spacing: .06em; background: #fff; }
+  .coupon-row input::placeholder { text-transform: none; letter-spacing: 0; }
+  .order-summary-strip { margin: 1.25rem 0 0; padding: 1rem 1.5rem; background: var(--beige-50); border: 1px solid var(--beige-200); }
+  .summary-sm { display: flex; justify-content: space-between; font-size: .875rem; color: var(--brown-700); padding: .3rem 0; }
+  .summary-sm.total { font-size: 1rem; font-family: var(--font-serif); color: var(--brown-900); border-top: 1px solid var(--beige-200); margin-top: .4rem; padding-top: .6rem; }
+  .summary-sm.discount { color: #065F46; font-size: .82rem; }
+  .popia-notice { background: var(--beige-50); border: 1px solid var(--beige-200); padding: 1.25rem 1.5rem; margin: 1.75rem 0 0; }
+  .popia-notice-header { display: flex; align-items: center; gap: .5rem; margin-bottom: .75rem; color: var(--brown-700); font-size: .875rem; }
+  .popia-notice p { font-size: .8rem; color: var(--gray-500); line-height: 1.6; margin-bottom: .9rem; }
+  .popia-notice a { color: var(--gold-dark); text-decoration: underline; }
+  .popia-checkbox-label { display: flex; align-items: flex-start; gap: .75rem; cursor: pointer; }
+  .popia-checkbox-label input[type="checkbox"] { accent-color: var(--gold-dark); width: 15px; height: 15px; flex-shrink: 0; margin-top: .15rem; }
+  .popia-checkbox-label span { font-size: .8rem; color: var(--brown-700); line-height: 1.5; }
+  .gift-section { border: 1px solid var(--beige-200); padding: 1.25rem 1.5rem; margin: 1.75rem 0 0; background: var(--warm-white); }
+  .gift-toggle-label { display: flex; align-items: center; gap: .75rem; cursor: pointer; font-size: .875rem; color: var(--brown-700); }
+  .gift-toggle-label input[type="checkbox"] { accent-color: var(--gold-dark); width: 15px; height: 15px; flex-shrink: 0; }
+  .gift-message-field { margin-top: 1rem; }
+  .lowres-warning { background: #FEF3C7; border: 1px solid #FCD34D; padding: .6rem .9rem; font-size: .8rem; color: #92400E; margin-top: .5rem; display: none; }
+  .drag-handle { cursor: grab; color: var(--gray-400); padding: .25rem; display: flex; align-items: center; justify-content: center; }
+  .drag-handle:active { cursor: grabbing; }
+  .sortable-ghost { opacity: .4; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero page-hero-sm">
+  <div class="container">
+    <h1>Place Your Order</h1>
+    <p>Fill in the details below. We will take care of the rest</p>
+  </div>
+</section>
+
+<section class="order-section">
+  <div class="container container-sm">
+
+    {% if at_capacity %}
+    <div class="capacity-banner">
+      <h2>We're fully booked right now</h2>
+      <p>We're working through our current orders and will open new slots soon.<br>
+         Reach us on WhatsApp to join the waiting list.</p>
+      {% if whatsapp_number %}
+      <a href="https://wa.me/{{ whatsapp_number }}" target="_blank" rel="noopener" class="btn btn-primary">
+        Join the Waiting List on WhatsApp &rarr;
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="step-indicator {% if at_capacity %}hidden{% endif %}" style="{% if at_capacity %}display:none;{% endif %}">
+      <div class="step-dot active" id="dot-1">1. Package</div>
+      <div class="step-dot" id="dot-2">2. Photos</div>
+      <div class="step-dot" id="dot-3">3. Details</div>
+    </div>
+
+    <form id="orderForm" action="{{ url_for('orders.submit_order') }}" method="POST" {% if at_capacity %}style="display:none;"{% endif %}>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div id="imageFields"></div>
+
+      <!-- Step 1: Package -->
+      <div class="form-step active" id="step-1">
+        <div class="card">
+          <h2 class="card-title">Choose your package</h2>
+
+          <div class="package-select-cards">
+            {% for key, pkg in packages.items() %}
+            <label class="package-select-card {% if key == selected_package %}selected{% endif %}" id="pkg-card-{{ key }}">
+              <input type="radio" name="package" value="{{ key }}"
+                     {% if key == selected_package %}checked{% endif %}
+                     onchange="selectPackage('{{ key }}')" />
+              <div style="font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: .4rem;">{{ pkg.name }}</div>
+              <div style="font-size:.8rem; color: var(--gray-400); margin-bottom: .75rem; font-weight:300;">{{ pkg.description }}</div>
+              <div style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--brown-800);">R{{ pkg.price }}</div>
+            </label>
+            {% endfor %}
+          </div>
+
+          <span class="section-label">Add-ons <span style="font-weight:300; opacity:.6">(optional)</span></span>
+          <div class="addon-checks">
+            {% for key, addon in addons.items() %}
+            <label class="addon-check-item">
+              <input type="checkbox" name="addons" value="{{ key }}" />
+              <div>
+                <div style="font-size: .875rem; font-weight: 400; color: var(--brown-700);">{{ addon.name }}</div>
+                <div style="font-size: .8rem; color: var(--gold-dark); font-family: var(--font-serif);">+R{{ addon.price }}</div>
+              </div>
+            </label>
+            {% endfor %}
+          </div>
+
+          <div class="order-nav">
+            <span></span>
+            <button type="button" class="btn btn-primary" onclick="goToStep(2)">
+              Upload Photos <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Photos -->
+      <div class="form-step" id="step-2">
+        <div class="card">
+          <h2 class="card-title">Upload your photos</h2>
+          <p style="color:var(--gray-400); margin-bottom:2rem; font-size:.9rem;">
+            Upload the photos you'd like in your book. Accepted: JPG, PNG, HEIC, WEBP.
+            For best quality, use photos at least 1MB each.
+          </p>
+
+          <div class="upload-area" id="uploadArea">
+            <input type="file" id="photoInput" accept=".jpg,.jpeg,.png,.heic,.webp" multiple />
+            <i data-lucide="upload-cloud" class="icon-xl"></i>
+            <p style="font-weight:500; color:var(--brown-800); margin-bottom:.4rem;">Click to choose photos</p>
+            <p style="font-size:.8rem; color:var(--gray-400);">or drag and drop here</p>
+            <p style="font-size:.75rem; color:var(--beige-400); margin-top:.5rem; letter-spacing:.04em;">JPG · PNG · HEIC · WEBP · up to 20MB each</p>
+          </div>
+
+          <div id="lowResWarning" class="lowres-warning">
+            <i data-lucide="alert-triangle" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:.3rem;"></i>
+            <strong>Low resolution detected.</strong> Some photos may be too small to print crisply. For best results, use photos at least 800 × 800 px or 1 MB in size.
+          </div>
+          <div id="uploadStatus" class="upload-progress"></div>
+          <div id="previewGrid" class="preview-grid"></div>
+          <p id="reorderHint" style="display:none; font-size:.75rem; color:var(--gray-400); margin-top:.5rem; text-align:center; letter-spacing:.03em;">
+            <i data-lucide="move" style="width:12px;height:12px;display:inline;vertical-align:middle;"></i>
+            Drag photos to reorder them
+          </p>
+
+          <div class="order-nav">
+            <button type="button" class="btn btn-outline" onclick="goToStep(1)">
+              <i data-lucide="arrow-left"></i> Back
+            </button>
+            <button type="button" class="btn btn-primary" onclick="validateUploadsAndNext()">
+              Your Details <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Details -->
+      <div class="form-step" id="step-3">
+        <div class="card">
+          <h2 class="card-title">Your details</h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="customer_name">Full Name</label>
+              <input type="text" id="customer_name" name="customer_name" required placeholder="e.g. Andiswa Nzama" />
+            </div>
+            <div class="form-group">
+              <label for="customer_email">Email Address</label>
+              <input type="email" id="customer_email" name="customer_email" required placeholder="your@email.com" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="customer_phone">Phone Number</label>
+            <input type="tel" id="customer_phone" name="customer_phone" required placeholder="071 234 5678" />
+          </div>
+
+          <div class="form-group">
+            <label for="delivery_address">Delivery Address</label>
+            <textarea id="delivery_address" name="delivery_address" rows="3" required
+              placeholder="Street address, suburb, city, postal code"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="special_notes">Special Notes <span style="font-weight:300; opacity:.6;">(optional)</span></label>
+            <textarea id="special_notes" name="special_notes" rows="3"
+              placeholder="Layout preferences, themes, captions, occasion details..."></textarea>
+          </div>
+
+          <div class="page-customise-section">
+            <span class="section-label" style="margin-bottom:.75rem;">
+              <i data-lucide="book-open" style="width:13px;height:13px;display:inline;vertical-align:middle;margin-right:.3rem;"></i>
+              Personalise your pages <span style="font-weight:300; opacity:.6;">(optional)</span>
+            </span>
+            <p style="font-size:.8rem; color:var(--gray-400); margin-bottom:1.5rem; line-height:1.6;">
+              Tell us what to print on your cover, opening page, and closing page.
+              Leave blank and we will design them based on your photos.
+            </p>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cover_title">Cover Title</label>
+                <input type="text" id="cover_title" name="cover_title" maxlength="100"
+                  placeholder="e.g. Our Wedding Day, Baby's First Year" />
+              </div>
+              <div class="form-group">
+                <label for="cover_subtitle">Cover Subtitle <span style="font-weight:300; opacity:.6;">(names, date, etc.)</span></label>
+                <input type="text" id="cover_subtitle" name="cover_subtitle" maxlength="100"
+                  placeholder="e.g. Andiswa and Lesego · 14 February 2025" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="preface_message">Opening Page Message</label>
+              <textarea id="preface_message" name="preface_message" rows="3"
+                placeholder="A dedication, quote, or note to appear on the first inside page…"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="closing_message">Closing Page Message</label>
+              <textarea id="closing_message" name="closing_message" rows="3"
+                placeholder="A closing note or quote to appear on the last page…"></textarea>
+            </div>
+          </div>
+
+          <div class="gift-section">
+            <label class="gift-toggle-label">
+              <input type="checkbox" name="is_gift" id="isGiftCheck" value="1" onchange="toggleGiftMessage(this)" />
+              <i data-lucide="gift" style="width:14px;height:14px;color:var(--gold-dark);"></i>
+              This order is a gift
+            </label>
+            <div class="gift-message-field" id="giftMessageField" style="display:none;">
+              <label for="gift_message" style="font-size:.8rem; color:var(--gray-400); margin-bottom:.4rem; display:block; margin-top:.25rem;">Gift message <span style="font-weight:300;">(will be printed on a gift card)</span></label>
+              <textarea id="gift_message" name="gift_message" rows="3"
+                placeholder="e.g. Happy birthday! We hope you love this memory…"></textarea>
+            </div>
+          </div>
+
+          <div class="coupon-section">
+            <span class="section-label" style="margin-bottom:0;">
+              <i data-lucide="tag" style="width:13px;height:13px;display:inline;vertical-align:middle;margin-right:.3rem;"></i>
+              Discount Code <span style="font-weight:300; opacity:.6;">(optional)</span>
+            </span>
+            <div class="coupon-row">
+              <input type="text" id="couponInput" placeholder="Enter code" maxlength="50" />
+              <button type="button" onclick="applyCoupon()" class="btn btn-outline" id="couponBtn">Apply</button>
+            </div>
+            <div id="couponResult" style="display:none; font-size:.8rem; margin-top:.5rem;"></div>
+            <input type="hidden" name="coupon_code" id="couponCodeField" />
+          </div>
+
+          <div class="order-summary-strip" id="orderSummary">
+            <div class="summary-sm">
+              <span>Subtotal</span>
+              <span id="summarySubtotal">R—</span>
+            </div>
+            <div class="summary-sm discount" id="summaryDiscountRow" style="display:none;">
+              <span id="summaryDiscountLabel">Discount</span>
+              <span id="summaryDiscountValue"></span>
+            </div>
+            <div class="summary-sm total">
+              <span>Total</span>
+              <strong id="summaryTotal">R—</strong>
+            </div>
+          </div>
+
+          <div class="popia-notice">
+            <div class="popia-notice-header">
+              <i data-lucide="shield-check"></i>
+              <strong>Your privacy matters: POPIA Notice</strong>
+            </div>
+            <p>
+              Memory Lane Prints collects your name, email address, phone number, delivery address,
+              and uploaded photos solely to fulfil your order and communicate with you about it.
+              Your information is stored securely and will not be sold or shared with third parties,
+              except where required by law or to complete delivery (e.g. courier services).
+              You have the right to access, correct, or request deletion of your personal information
+              at any time. For any queries, contact us at
+              <a href="mailto:hello@memorylaneprints.co.za">hello@memorylaneprints.co.za</a>.
+              Read our full <a href="{{ url_for('main.privacy') }}" target="_blank">Privacy Policy</a>.
+            </p>
+            <label class="popia-checkbox-label">
+              <input type="checkbox" name="popia_consent" id="popia_consent" value="1" required />
+              <span>
+                I have read and understand how Memory Lane Prints will use my personal information
+                in accordance with POPIA (Protection of Personal Information Act, 2013).
+              </span>
+            </label>
+          </div>
+
+          <div class="order-nav">
+            <button type="button" class="btn btn-outline" onclick="goToStep(2)">
+              <i data-lucide="arrow-left"></i> Back
+            </button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              Review Order <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script>
+const UPLOAD_URL   = "{{ url_for('orders.upload_image') }}";
+const COUPON_URL   = "{{ url_for('orders.validate_coupon') }}";
+const CSRF_TOKEN   = "{{ csrf_token() }}";
+const PACKAGE_DATA = {{ packages | tojson }};
+const ADDON_DATA   = {{ addons | tojson }};
+let appliedDiscount = 0;
+let uploadedImages = [];
+let lowResCount = 0;
+
+// ---- Progress save ----
+const PROGRESS_KEY = 'mlp_order_progress';
+function saveProgress() {
+  const pkg = document.querySelector('input[name="package"]:checked')?.value;
+  const addons = Array.from(document.querySelectorAll('input[name="addons"]:checked')).map(el => el.value);
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify({ pkg, addons })); } catch(e) {}
+}
+function restoreProgress() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(PROGRESS_KEY) || 'null');
+    if (!saved) return;
+    if (saved.pkg) {
+      const radio = document.querySelector(`input[name="package"][value="${saved.pkg}"]`);
+      if (radio) { radio.checked = true; selectPackage(saved.pkg); }
+    }
+    (saved.addons || []).forEach(key => {
+      const cb = document.querySelector(`input[name="addons"][value="${key}"]`);
+      if (cb) cb.checked = true;
+    });
+  } catch(e) {}
+}
+restoreProgress();
+document.querySelectorAll('input[name="package"]').forEach(el => el.addEventListener('change', saveProgress));
+document.querySelectorAll('input[name="addons"]').forEach(el => el.addEventListener('change', saveProgress));
+
+// ---- Gift message toggle ----
+function toggleGiftMessage(cb) {
+  document.getElementById('giftMessageField').style.display = cb.checked ? 'block' : 'none';
+}
+
+function selectPackage(key) {
+  document.querySelectorAll('.package-select-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('pkg-card-' + key).classList.add('selected');
+}
+
+function getSubtotal() {
+  const pkgKey = document.querySelector('input[name="package"]:checked')?.value;
+  const base = PACKAGE_DATA[pkgKey]?.price || 0;
+  const addonTotal = Array.from(document.querySelectorAll('input[name="addons"]:checked'))
+    .reduce((s, el) => s + (ADDON_DATA[el.value]?.price || 0), 0);
+  return base + addonTotal;
+}
+
+function updateOrderSummary() {
+  const sub = getSubtotal();
+  document.getElementById('summarySubtotal').textContent = 'R' + sub.toFixed(2);
+  document.getElementById('summaryTotal').textContent = 'R' + Math.max(0, sub - appliedDiscount).toFixed(2);
+}
+
+async function applyCoupon() {
+  const code = document.getElementById('couponInput').value.trim();
+  const result = document.getElementById('couponResult');
+  if (!code) { result.style.display = 'none'; return; }
+  const fd = new FormData();
+  fd.append('code', code);
+  fd.append('total', getSubtotal());
+  fd.append('csrf_token', CSRF_TOKEN);
+  try {
+    const res = await fetch(COUPON_URL, { method: 'POST', body: fd });
+    const data = await res.json();
+    result.style.display = 'block';
+    if (data.valid) {
+      result.style.color = 'var(--gold-dark)';
+      result.textContent = data.label + ' applied!';
+      appliedDiscount = data.discount;
+      document.getElementById('couponCodeField').value = data.code;
+      document.getElementById('summaryDiscountLabel').textContent = 'Discount (' + data.code + ')';
+      document.getElementById('summaryDiscountValue').textContent = '-R' + data.discount.toFixed(2);
+      document.getElementById('summaryDiscountRow').style.display = 'flex';
+    } else {
+      result.style.color = '#991B1B';
+      result.textContent = data.error;
+      appliedDiscount = 0;
+      document.getElementById('couponCodeField').value = '';
+      document.getElementById('summaryDiscountRow').style.display = 'none';
+    }
+    updateOrderSummary();
+  } catch (e) {
+    result.style.display = 'block';
+    result.style.color = '#991B1B';
+    result.textContent = 'Could not validate code. Please try again.';
+  }
+}
+
+function goToStep(n) {
+  document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  document.querySelectorAll('.step-dot').forEach((d, i) => {
+    d.classList.remove('active', 'done');
+    if (i + 1 < n) d.classList.add('done');
+    if (i + 1 === n) d.classList.add('active');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  lucide.createIcons();
+  if (n === 3) updateOrderSummary();
+}
+
+function validateUploadsAndNext() {
+  if (uploadedImages.length === 0) {
+    alert('Please upload at least one photo before continuing.');
+    return;
+  }
+  goToStep(3);
+}
+
+async function uploadFile(file) {
+  const fd = new FormData();
+  fd.append('image', file);
+  fd.append('csrf_token', CSRF_TOKEN);
+  const res = await fetch(UPLOAD_URL, { method: 'POST', body: fd });
+  if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Upload failed'); }
+  return res.json();
+}
+
+function addPreview(data, objectUrl) {
+  const grid = document.getElementById('previewGrid');
+  const item = document.createElement('div');
+  item.className = 'preview-item';
+  item.dataset.publicId = data.public_id;
+  item.innerHTML = `
+    <div class="preview-item-thumb">
+      <img src="${objectUrl}" alt="${data.filename}" />
+      <button type="button" class="preview-remove" onclick="removeImage(this,'${data.public_id}')" title="Remove"><i data-lucide="x"></i></button>
+      <div class="drag-handle" title="Drag to reorder"><i data-lucide="grip-vertical"></i></div>
+    </div>
+    <input type="text" class="photo-caption" placeholder="Add a caption..." maxlength="150" />
+  `;
+  grid.appendChild(item);
+  lucide.createIcons();
+  document.getElementById('reorderHint').style.display = grid.children.length > 1 ? 'block' : 'none';
+}
+
+function removeImage(btn, publicId) {
+  uploadedImages = uploadedImages.filter(i => i.public_id !== publicId);
+  btn.closest('.preview-item').remove();
+  syncHiddenFields();
+  const grid = document.getElementById('previewGrid');
+  document.getElementById('reorderHint').style.display = grid.children.length > 1 ? 'block' : 'none';
+}
+
+function syncHiddenFields() {
+  const container = document.getElementById('imageFields');
+  container.innerHTML = '';
+  // Read order from DOM so drag-reorder is respected
+  const items = document.querySelectorAll('#previewGrid .preview-item');
+  items.forEach(item => {
+    const pid = item.dataset.publicId;
+    const img = uploadedImages.find(i => i.public_id === pid);
+    if (!img) return;
+    const caption = item.querySelector('.photo-caption')?.value || '';
+    [
+      ['image_urls[]', img.url],
+      ['image_public_ids[]', img.public_id],
+      ['image_filenames[]', img.filename],
+      ['image_captions[]', caption],
+    ].forEach(([name, val]) => {
+      const el = document.createElement('input');
+      el.type = 'hidden'; el.name = name; el.value = val;
+      container.appendChild(el);
+    });
+  });
+}
+
+function checkLowRes(file) {
+  return new Promise(resolve => {
+    if (!file.type.startsWith('image/')) { resolve(false); return; }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); resolve(img.naturalWidth < 800 || img.naturalHeight < 800); };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(false); };
+    img.src = url;
+  });
+}
+
+async function handleFiles(files) {
+  const status = document.getElementById('uploadStatus');
+  const total = files.length;
+  let done = 0;
+  status.textContent = `Uploading 0 of ${total}...`;
+  for (const file of Array.from(files)) {
+    try {
+      const objectUrl = URL.createObjectURL(file);
+      const isLowRes = await checkLowRes(file);
+      if (isLowRes) {
+        lowResCount++;
+        document.getElementById('lowResWarning').style.display = 'block';
+        lucide.createIcons();
+      }
+      const data = await uploadFile(file);
+      uploadedImages.push(data);
+      syncHiddenFields();
+      addPreview(data, objectUrl);
+      done++;
+      status.textContent = done < total ? `Uploading ${done} of ${total}...` : `${total} photo${total !== 1 ? 's' : ''} uploaded successfully.`;
+    } catch (e) {
+      status.textContent = `Could not upload ${file.name}: ${e.message}`;
+    }
+  }
+}
+
+const uploadArea = document.getElementById('uploadArea');
+const photoInput = document.getElementById('photoInput');
+uploadArea.addEventListener('click', () => photoInput.click());
+photoInput.addEventListener('change', e => handleFiles(e.target.files));
+uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+uploadArea.addEventListener('drop', e => { e.preventDefault(); uploadArea.classList.remove('drag-over'); handleFiles(e.dataTransfer.files); });
+
+// ---- Sortable drag-to-reorder ----
+Sortable.create(document.getElementById('previewGrid'), {
+  animation: 150,
+  ghostClass: 'sortable-ghost',
+  handle: '.drag-handle',
+  onEnd: syncHiddenFields,
+});
+
+document.getElementById('orderForm').addEventListener('submit', () => {
+  syncHiddenFields();
+  try { localStorage.removeItem(PROGRESS_KEY); } catch(e) {}
+});
+</script>
+{% endblock %}

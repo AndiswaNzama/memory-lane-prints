@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Your book is in production</title>
+<style>
+  body { margin:0; padding:0; background:#F7F2EA; font-family:'Helvetica Neue',Arial,sans-serif; color:#3D2D15; }
+  .wrap { max-width:560px; margin:40px auto; background:#FDFAF5; border:1px solid #E8D5B0; }
+  .header { background:#22180A; padding:32px 40px; text-align:center; }
+  .header h1 { font-family:Georgia,serif; color:#F5ECD8; font-size:22px; font-weight:400; margin:0; letter-spacing:.04em; }
+  .header p { color:rgba(245,236,216,.55); font-size:12px; margin:6px 0 0; letter-spacing:.1em; text-transform:uppercase; }
+  .body { padding:36px 40px; }
+  .greeting { font-family:Georgia,serif; font-size:20px; color:#22180A; margin:0 0 12px; }
+  .body p { font-size:14px; color:#5C4422; line-height:1.7; margin:0 0 16px; }
+  .status-box { background:#F5ECD8; border:1px solid #D4B882; padding:18px 24px; margin:20px 0; display:flex; align-items:center; gap:14px; }
+  .status-box .dot { width:10px; height:10px; background:var(--gold,#C9A84C); border-radius:50%; flex-shrink:0; background:#C9A84C; }
+  .status-box div { font-size:13px; color:#5C4422; }
+  .status-box strong { display:block; color:#22180A; margin-bottom:2px; }
+  .order-ref { font-size:12px; color:#9C8E7E; margin-top:4px; }
+  .footer { background:#F5ECD8; border-top:1px solid #E8D5B0; padding:20px 40px; text-align:center; font-size:11px; color:#9C8E7E; line-height:1.7; }
+  .footer a { color:#9E7F2E; text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>Memory Lane Prints</h1>
+    <p>Your book is being made</p>
+  </div>
+  <div class="body">
+    <p class="greeting">Hi {{ order.customer_name.split()[0] }},</p>
+    <p>We have started working on your personalised photo book. Our team is designing your pages and getting everything ready for print.</p>
+
+    <div class="status-box">
+      <div class="dot"></div>
+      <div>
+        <strong>In Production</strong>
+        We are designing and printing your {{ order.get_package_info().get('name', 'photo book') }}.
+        <div class="order-ref">Order {{ order.order_number }}</div>
+      </div>
+    </div>
+
+    <p>We'll send you another email as soon as your book is dispatched with your tracking number. Most orders are dispatched within 5–10 business days of payment.</p>
+
+    <p style="font-size:13px; color:#9C8E7E;">
+      Questions? Reply to this email or reach us on WhatsApp — we're always happy to help.
+    </p>
+  </div>
+  <div class="footer">
+    &copy; 2025 Memory Lane Prints &mdash; South Africa<br>
+    <a href="mailto:hello@memorylaneprints.co.za">hello@memorylaneprints.co.za</a>
+  </div>
+</div>
+</body>
+</html>

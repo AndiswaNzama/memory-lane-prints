@@ -1,0 +1,107 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Packages &amp; Prices{% endblock %}
+
+{% block content %}
+
+<!-- Packages -->
+<div class="card" style="margin-bottom:2rem;">
+  <div class="card-header">
+    <h2>Packages</h2>
+    <span style="font-size:.75rem; color:var(--gray-400);">Changes apply to new orders immediately</span>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th style="width:120px;">Price (R)</th>
+          <th style="width:80px;">Active</th>
+          <th style="width:100px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pkg in packages %}
+        <tr>
+          <form action="{{ url_for('admin.update_package', pkg_id=pkg.id) }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <td style="color:var(--gray-400); font-family:monospace; font-size:.8rem;">{{ pkg.key }}</td>
+            <td>
+              <input type="text" name="name" value="{{ pkg.name }}"
+                     style="width:100%; min-width:140px;" required />
+            </td>
+            <td>
+              <input type="text" name="description" value="{{ pkg.description or '' }}"
+                     style="width:100%; min-width:220px;" />
+            </td>
+            <td>
+              <input type="number" name="price" value="{{ pkg.price|int }}"
+                     min="0" step="1" style="width:100%;" required />
+            </td>
+            <td style="text-align:center;">
+              <input type="checkbox" name="is_active" value="1"
+                     {{ 'checked' if pkg.is_active }}
+                     style="width:16px; height:16px; cursor:pointer;" />
+            </td>
+            <td>
+              <button type="submit" class="btn btn-gold btn-sm">Save</button>
+            </td>
+          </form>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add-ons -->
+<div class="card">
+  <div class="card-header">
+    <h2>Add-ons</h2>
+    <span style="font-size:.75rem; color:var(--gray-400);">Uncheck "Active" to hide from the order form</span>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Name</th>
+          <th style="width:120px;">Price (R)</th>
+          <th style="width:80px;">Active</th>
+          <th style="width:100px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for addon in addons %}
+        <tr>
+          <form action="{{ url_for('admin.update_addon', addon_id=addon.id) }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <td style="color:var(--gray-400); font-family:monospace; font-size:.8rem;">{{ addon.key }}</td>
+            <td>
+              <input type="text" name="name" value="{{ addon.name }}"
+                     style="width:100%; min-width:200px;" required />
+            </td>
+            <td>
+              <input type="number" name="price" value="{{ addon.price|int }}"
+                     min="0" step="1" style="width:100%;" required />
+            </td>
+            <td style="text-align:center;">
+              <input type="checkbox" name="is_active" value="1"
+                     {{ 'checked' if addon.is_active }}
+                     style="width:16px; height:16px; cursor:pointer;" />
+            </td>
+            <td>
+              <button type="submit" class="btn btn-gold btn-sm">Save</button>
+            </td>
+          </form>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

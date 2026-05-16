@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>How was your book?</title>
+<style>
+  body { margin:0; padding:0; background:#F7F2EA; font-family:'Helvetica Neue',Arial,sans-serif; color:#3D2D15; }
+  .wrap { max-width:560px; margin:40px auto; background:#FDFAF5; border:1px solid #E8D5B0; }
+  .header { background:#22180A; padding:32px 40px; text-align:center; }
+  .header h1 { font-family:Georgia,serif; color:#F5ECD8; font-size:22px; font-weight:400; margin:0; letter-spacing:.04em; }
+  .header p { color:rgba(245,236,216,.55); font-size:12px; margin:6px 0 0; letter-spacing:.1em; text-transform:uppercase; }
+  .body { padding:36px 40px; }
+  .greeting { font-family:Georgia,serif; font-size:20px; color:#22180A; margin:0 0 12px; }
+  .body p { font-size:14px; color:#5C4422; line-height:1.7; margin:0 0 16px; }
+  .stars { font-size:24px; letter-spacing:4px; margin:8px 0 4px; color:#C9A84C; }
+  .cta-btn { display:inline-block; background:#C9A84C; color:#22180A; text-decoration:none; padding:14px 32px; font-size:13px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; margin:8px 0 16px; }
+  .footer { background:#F5ECD8; border-top:1px solid #E8D5B0; padding:18px 40px; text-align:center; font-size:11px; color:#9C8E7E; line-height:1.7; }
+  .footer a { color:#9E7F2E; text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>Memory Lane Prints</h1>
+    <p>How was your experience?</p>
+  </div>
+  <div class="body">
+    <p class="greeting">Hi {{ order.customer_name.split()[0] }},</p>
+    <p>
+      We hope your photo book arrived safely and that you love it as much as we loved making it for you.
+      Your feedback means the world to us and helps other customers feel confident ordering.
+    </p>
+
+    <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+
+    <p>It only takes a minute — click below to leave your review:</p>
+
+    <a href="{{ app_url }}/review/{{ order.order_number }}" class="cta-btn">
+      Leave a Review &rarr;
+    </a>
+
+    <p style="font-size:13px; color:#9C8E7E; margin-top:20px;">
+      Thank you for choosing Memory Lane Prints. We hope to create more memories with you soon.
+    </p>
+  </div>
+  <div class="footer">
+    &copy; 2025 Memory Lane Prints &mdash; South Africa<br>
+    <a href="mailto:hello@memorylaneprints.co.za">hello@memorylaneprints.co.za</a>
+  </div>
+</div>
+</body>
+</html>
