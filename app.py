@@ -12,9 +12,9 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from dotenv import load_dotenv
 
-from config import config
-
 load_dotenv()
+
+from config import config
 
 _sentry_dsn = os.environ.get('SENTRY_DSN', '')
 if _sentry_dsn:
