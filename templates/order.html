@@ -151,10 +151,6 @@
             <p style="font-size:.75rem; color:var(--beige-400); margin-top:.5rem; letter-spacing:.04em;">JPG · PNG · HEIC · WEBP · up to 20MB each</p>
           </div>
 
-          <div id="lowResWarning" class="lowres-warning">
-            <i data-lucide="alert-triangle" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:.3rem;"></i>
-            <strong>Low resolution detected.</strong> Some photos may be too small to print crisply. For best results, use photos at least 800 × 800 px or 1 MB in size.
-          </div>
           <div id="uploadStatus" class="upload-progress"></div>
           <div id="previewGrid" class="preview-grid"></div>
           <p id="reorderHint" style="display:none; font-size:.75rem; color:var(--gray-400); margin-top:.5rem; text-align:center; letter-spacing:.03em;">
@@ -334,7 +330,6 @@ const PACKAGE_DATA = {{ packages | tojson }};
 const ADDON_DATA   = {{ addons | tojson }};
 let appliedDiscount = 0;
 let uploadedImages = [];
-let lowResCount = 0;
 
 // ---- Progress save ----
 const PROGRESS_KEY = 'mlp_order_progress';
@@ -499,17 +494,6 @@ function syncHiddenFields() {
   });
 }
 
-function checkLowRes(file) {
-  return new Promise(resolve => {
-    if (!file.type.startsWith('image/')) { resolve(false); return; }
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => { URL.revokeObjectURL(url); resolve(img.naturalWidth < 800 || img.naturalHeight < 800); };
-    img.onerror = () => { URL.revokeObjectURL(url); resolve(false); };
-    img.src = url;
-  });
-}
-
 async function handleFiles(files) {
   const status = document.getElementById('uploadStatus');
   const total = files.length;
@@ -518,12 +502,6 @@ async function handleFiles(files) {
   for (const file of Array.from(files)) {
     try {
       const objectUrl = URL.createObjectURL(file);
-      const isLowRes = await checkLowRes(file);
-      if (isLowRes) {
-        lowResCount++;
-        document.getElementById('lowResWarning').style.display = 'block';
-        lucide.createIcons();
-      }
       const data = await uploadFile(file);
       uploadedImages.push(data);
       syncHiddenFields();
