@@ -71,9 +71,9 @@ def upload_image():
         return jsonify({'error': 'File type not allowed. Use JPG, PNG, HEIC, or WEBP.'}), 400
 
     try:
-        result = cloudinary.uploader.upload(
+        result = cloudinary.uploader.unsigned_upload(
             file,
-            folder='memory-lane-prints',
+            'memory_lane_prints',
             resource_type='image',
         )
     except Exception as e:
