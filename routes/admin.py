@@ -329,11 +329,11 @@ def settings():
             photo_file = request.files.get('about_photo')
             if photo_file and photo_file.filename:
                 old_pid = get_setting('about_photo_public_id')
-                result = cloudinary.uploader.upload(
+                result = cloudinary.uploader.unsigned_upload(
                     photo_file,
+                    upload_preset='memory_lane_prints',
                     folder='memory-lane-about',
-                    resource_type='image',
-                    transformation=[{'quality': 'auto', 'fetch_format': 'auto', 'width': 1200, 'crop': 'limit'}],
+                    transformation=[{'c_limit': 'limit', 'f': 'auto', 'q': 'auto', 'w': 1200}],
                 )
                 set_setting('about_photo_url', result['secure_url'])
                 set_setting('about_photo_public_id', result['public_id'])
