@@ -116,7 +116,6 @@ def review(order_number):
                     proof_file,
                     folder='memory-lane-reviews',
                     resource_type='image',
-                    transformation=[{'quality': 'auto', 'fetch_format': 'auto', 'width': 800, 'crop': 'limit'}],
                 )
                 photo_url = result['secure_url']
                 photo_public_id = result['public_id']

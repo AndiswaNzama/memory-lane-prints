@@ -333,7 +333,6 @@ def settings():
                     photo_file,
                     folder='memory-lane-about',
                     resource_type='image',
-                    transformation=[{'quality': 'auto', 'fetch_format': 'auto', 'width': 1200, 'crop': 'limit'}],
                 )
                 set_setting('about_photo_url', result['secure_url'])
                 set_setting('about_photo_public_id', result['public_id'])
@@ -524,7 +523,6 @@ def gallery_upload():
         photo_file,
         folder='memory-lane-gallery',
         resource_type='image',
-        transformation=[{'quality': 'auto', 'fetch_format': 'auto', 'width': 1400, 'crop': 'limit'}],
     )
     db.session.add(GalleryImage(
         cloudinary_url=result['secure_url'],
