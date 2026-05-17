@@ -1,4 +1,5 @@
 import os
+import logging
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 import cloudinary
@@ -97,15 +98,31 @@ def create_app(config_name=None):
     def inject_site_globals():
         from models import get_setting, Review
 
+        logger = logging.getLogger(__name__)
+
         def pending_reviews_count():
             try:
                 return Review.query.filter_by(is_approved=False).count()
             except Exception:
                 return 0
 
+        try:
+            whatsapp_number = get_setting("whatsapp_number")
+            instagram_handle = get_setting("instagram_handle")
+        except Exception as e:
+            logger.error(
+                "inject_site_globals: failed to fetch settings from database — "
+                "the settings table may be empty or the transaction is in a failed state. "
+                "Error: %s",
+                e,
+            )
+            db.session.rollback()
+            whatsapp_number = ""
+            instagram_handle = ""
+
         return {
-            "whatsapp_number": get_setting("whatsapp_number"),
-            "instagram_handle": get_setting("instagram_handle"),
+            "whatsapp_number": whatsapp_number,
+            "instagram_handle": instagram_handle,
             "pending_reviews_count": pending_reviews_count,
         }
 
