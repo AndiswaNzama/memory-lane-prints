@@ -329,10 +329,11 @@ def settings():
             photo_file = request.files.get('about_photo')
             if photo_file and photo_file.filename:
                 old_pid = get_setting('about_photo_public_id')
-                result = cloudinary.uploader.upload(
+                result = cloudinary.uploader.unsigned_upload(
                     photo_file,
+                    upload_preset='memory_lane_prints',
                     folder='memory-lane-about',
-                    resource_type='image',
+                    transformation=[{'c_limit': 'limit', 'f': 'auto', 'q': 'auto', 'w': 1200}],
                 )
                 set_setting('about_photo_url', result['secure_url'])
                 set_setting('about_photo_public_id', result['public_id'])
@@ -583,79 +584,8 @@ def bulk_update_orders():
 def update_checklist(order_number):
     import json as _json
     order = Order.query.filter_by(order_number=order_number).first_or_404()
-    checked = request.form.getlist('checklist')
-    order.print_checklist = _json.dumps(checked)
+    checked = request.form.getlist('checked')
+    order.checklist = _json.dumps(checked)
     db.session.commit()
-    flash('Checklist saved.', 'success')
-    return redirect(url_for('admin.order_detail', order_number=order_number))
+    return '', 204
 
-
-@admin_bp.route('/newsletter')
-@login_required
-def newsletter():
-    subs = Newsletter.query.order_by(Newsletter.subscribed_at.desc()).all()
-    active = sum(1 for s in subs if s.is_active)
-    return render_template('admin/newsletter.html', subs=subs, active_count=active)
-
-
-@admin_bp.route('/newsletter/<int:sub_id>/toggle', methods=['POST'])
-@login_required
-def toggle_subscriber(sub_id):
-    sub = Newsletter.query.get_or_404(sub_id)
-    sub.is_active = not sub.is_active
-    db.session.commit()
-    flash(f'{sub.email} {"re-subscribed" if sub.is_active else "unsubscribed"}.', 'success')
-    return redirect(url_for('admin.newsletter'))
-
-
-@admin_bp.route('/newsletter/export')
-@login_required
-def export_newsletter():
-    subs = Newsletter.query.filter_by(is_active=True).order_by(Newsletter.subscribed_at.desc()).all()
-    buf = io.StringIO()
-    writer = csv.writer(buf)
-    writer.writerow(['Email', 'Name', 'Subscribed At', 'Source'])
-    for s in subs:
-        writer.writerow([s.email, s.name or '', s.subscribed_at.strftime('%Y-%m-%d %H:%M') if s.subscribed_at else '', s.source or ''])
-    return Response(buf.getvalue(), mimetype='text/csv',
-                    headers={'Content-Disposition': 'attachment; filename=newsletter.csv'})
-
-
-@admin_bp.route('/order/<order_number>/send-reminder', methods=['POST'])
-@login_required
-def send_reminder(order_number):
-    from utils.mail import send_abandoned_order_reminder
-    order = Order.query.filter_by(order_number=order_number).first_or_404()
-    send_abandoned_order_reminder(order)
-    order.reminder_sent_at = datetime.now(timezone.utc)
-    db.session.commit()
-    flash(f'Payment reminder sent to {order.customer_email}.', 'success')
-    return redirect(url_for('admin.order_detail', order_number=order_number))
-
-
-@admin_bp.route('/order/<order_number>/send-review-request', methods=['POST'])
-@login_required
-def send_review_request(order_number):
-    from utils.mail import send_review_request_email
-    order = Order.query.filter_by(order_number=order_number).first_or_404()
-    send_review_request_email(order)
-    flash(f'Review request sent to {order.customer_email}.', 'success')
-    return redirect(url_for('admin.order_detail', order_number=order_number))
-
-
-@admin_bp.route('/popia-register')
-@login_required
-def popia_register():
-    search = request.args.get('q', '').strip()
-    query = ConsentLog.query.order_by(ConsentLog.consented_at.desc())
-    if search:
-        like = f'%{search}%'
-        query = query.filter(
-            db.or_(
-                ConsentLog.customer_name.ilike(like),
-                ConsentLog.customer_email.ilike(like),
-                ConsentLog.order_number.ilike(like),
-            )
-        )
-    entries = query.all()
-    return render_template('admin/popia_register.html', entries=entries, search=search)
