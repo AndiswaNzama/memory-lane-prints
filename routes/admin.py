@@ -331,9 +331,9 @@ def settings():
                 old_pid = get_setting('about_photo_public_id')
                 result = cloudinary.uploader.unsigned_upload(
                     photo_file,
-                    upload_preset='memory_lane_prints',
+                    'memory_lane_prints',
                     folder='memory-lane-about',
-                    transformation=[{'c_limit': 'limit', 'f': 'auto', 'q': 'auto', 'w': 1200}],
+                    resource_type='image',
                 )
                 set_setting('about_photo_url', result['secure_url'])
                 set_setting('about_photo_public_id', result['public_id'])
@@ -585,7 +585,7 @@ def update_checklist(order_number):
     import json as _json
     order = Order.query.filter_by(order_number=order_number).first_or_404()
     checked = request.form.getlist('checked')
-    order.checklist = _json.dumps(checked)
+    order.print_checklist = _json.dumps(checked)
     db.session.commit()
     return '', 204
 
@@ -631,6 +631,28 @@ def export_newsletter():
         mimetype='text/csv',
         headers={'Content-Disposition': 'attachment; filename=newsletter_subscribers.csv'},
     )
+
+
+@admin_bp.route('/order/<order_number>/send-reminder', methods=['POST'])
+@login_required
+def send_reminder(order_number):
+    from utils.mail import send_abandoned_order_reminder
+    order = Order.query.filter_by(order_number=order_number).first_or_404()
+    send_abandoned_order_reminder(order)
+    order.reminder_sent_at = datetime.now(timezone.utc)
+    db.session.commit()
+    flash(f'Payment reminder sent to {order.customer_email}.', 'success')
+    return redirect(url_for('admin.order_detail', order_number=order_number))
+
+
+@admin_bp.route('/order/<order_number>/send-review-request', methods=['POST'])
+@login_required
+def send_review_request(order_number):
+    from utils.mail import send_review_request_email
+    order = Order.query.filter_by(order_number=order_number).first_or_404()
+    send_review_request_email(order)
+    flash(f'Review request sent to {order.customer_email}.', 'success')
+    return redirect(url_for('admin.order_detail', order_number=order_number))
 
 
 @admin_bp.route('/popia-register')
