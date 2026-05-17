@@ -2,7 +2,7 @@ import cloudinary.uploader
 from datetime import datetime, timezone
 from flask import (Blueprint, render_template, request, redirect,
                    url_for, flash, session, current_app, jsonify)
-from app import db
+from app import db, csrf
 from models import Order, OrderImage, ConsentLog, Coupon, get_packages, get_addons, get_setting
 
 orders_bp = Blueprint('orders', __name__)
@@ -58,6 +58,7 @@ def validate_coupon():
 
 
 @orders_bp.route('/upload-image', methods=['POST'])
+@csrf.exempt
 def upload_image():
     if 'image' not in request.files:
         return jsonify({'error': 'No file provided'}), 400
