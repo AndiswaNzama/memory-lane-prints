@@ -431,7 +431,7 @@ def customers():
     rows = (
         db.session.query(
             Order.customer_email,
-            Order.customer_name,
+            func.max(Order.customer_name).label('customer_name'),
             func.count(Order.id).label('order_count'),
             func.sum(Order.total).label('total_spend'),
             func.max(Order.created_at).label('last_order'),
