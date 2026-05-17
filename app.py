@@ -59,8 +59,11 @@ def create_app(config_name=None):
     mail.init_app(app)
     limiter.init_app(app)
 
-    # Cloudinary setup
-    if app.config.get("CLOUDINARY_CLOUD_NAME") not in (None, "", "placeholder"):
+    # Cloudinary setup — prefers CLOUDINARY_URL, falls back to individual vars
+    cloudinary_url = os.environ.get("CLOUDINARY_URL", "")
+    if cloudinary_url:
+        cloudinary.config.from_url(cloudinary_url)
+    elif app.config.get("CLOUDINARY_CLOUD_NAME") not in (None, "", "placeholder"):
         cloudinary.config(
             cloud_name=app.config["CLOUDINARY_CLOUD_NAME"],
             api_key=app.config["CLOUDINARY_API_KEY"],
