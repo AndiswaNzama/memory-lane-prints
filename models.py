@@ -271,5 +271,3 @@ class Newsletter(db.Model):
     subscribed_at = db.Column(db.DateTime, default=_now)
     is_active     = db.Column(db.Boolean, default=True)
     source        = db.Column(db.String(50), default='footer')
-
-vc
