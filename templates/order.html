@@ -47,9 +47,9 @@
   .page-spread[data-layout="quad"]     { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
   .page-spread[data-layout="triptych"] { grid-template-columns: 1fr 1fr; }
   .page-spread[data-layout="triptych"] .page-slot:first-child { grid-column: 1 / -1; }
-  .page-slot { background: var(--warm-white); border: 1px dashed var(--beige-300); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; cursor: pointer; transition: background .12s, border-color .12s; min-height: 100px; aspect-ratio: 1; }
-  .page-spread[data-layout="full"] .page-slot { aspect-ratio: 4/3; }
-  .page-spread[data-layout="triptych"] .page-slot:first-child { aspect-ratio: 2/1; }
+  .page-slot { background: var(--warm-white); border: 1px dashed var(--beige-300); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; cursor: pointer; transition: background .12s, border-color .12s; min-height: 100px; }
+  .page-spread[data-layout="full"] .page-slot { min-height: 220px; }
+  .page-spread[data-layout="triptych"] .page-slot:first-child { min-height: 160px; }
   .page-slot.drag-over { background: var(--beige-100); border-color: var(--gold); border-style: solid; }
   .page-slot.has-photo { cursor: default; border-style: solid; border-color: var(--beige-200); }
   .slot-empty-hint { font-size: .7rem; color: var(--beige-400); text-align: center; padding: .5rem; pointer-events: none; user-select: none; line-height: 1.5; }
@@ -555,6 +555,10 @@ function renderPool() {
 function addPage(layout, render) {
   if (layout === undefined) layout = 'half';
   if (render === undefined) render = true;
+  if (pages.length >= 30) {
+    alert('Maximum of 30 pages reached. Use the Special Notes field if you need more.');
+    return;
+  }
   pages.push({ layout, slots: Array(LAYOUTS[layout].slots).fill(null) });
   if (render) renderPages();
 }
