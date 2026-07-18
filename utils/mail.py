@@ -1,4 +1,4 @@
-import logging
+﻿import logging
 from flask import render_template, current_app
 from flask_mail import Message
 from app import mail
@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 def _sender():
     username = current_app.config.get('MAIL_USERNAME', '')
-    name = get_setting('mail_sender_name', 'Memory Lane Prints')
+    name = get_setting('mail_sender_name', 'uBuhle Prints Studio')
     return f'{name} <{username}>' if username else None
 
 
@@ -29,7 +29,7 @@ def _send(msg):
 def send_order_confirmation(order):
     admin_email = get_setting('admin_email')
     msg = Message(
-        subject=f'Your Memory Lane Prints order is confirmed — {order.order_number}',
+        subject=f'Your uBuhle Prints Studio order is confirmed — {order.order_number}',
         recipients=[order.customer_email],
         bcc=[admin_email] if admin_email else [],
         html=render_template('emails/order_confirmation.html', order=order),
@@ -88,7 +88,7 @@ def send_shipped_email(order):
 def send_abandoned_order_reminder(order):
     app_url = get_setting('app_url', 'http://localhost:5000')
     msg = Message(
-        subject=f'You left something behind — complete your Memory Lane Prints order',
+        subject=f'You left something behind — complete your uBuhle Prints Studio order',
         recipients=[order.customer_email],
         html=render_template('emails/abandoned_order.html', order=order, app_url=app_url),
     )
@@ -98,7 +98,7 @@ def send_abandoned_order_reminder(order):
 def send_review_request_email(order):
     app_url = get_setting('app_url', 'http://localhost:5000')
     msg = Message(
-        subject=f'How was your Memory Lane Prints book? Share your experience',
+        subject=f'How was your uBuhle Prints Studio book? Share your experience',
         recipients=[order.customer_email],
         html=render_template('emails/review_request.html', order=order, app_url=app_url),
     )

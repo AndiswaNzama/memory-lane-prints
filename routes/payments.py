@@ -1,4 +1,4 @@
-import hashlib
+﻿import hashlib
 import ipaddress
 import urllib.parse
 import requests
@@ -65,7 +65,7 @@ def initiate(order_number):
         'email_address':        order.customer_email,
         'm_payment_id':         order.order_number,
         'amount':               f'{order.total:.2f}',
-        'item_name':            f'Memory Lane Prints – {order.get_package_info().get("name", "")}',
+        'item_name':            f'uBuhle Prints Studio – {order.get_package_info().get("name", "")}',
         'item_description':     f'Order {order.order_number}',
         'email_confirmation':   '1',
         'confirmation_address': order.customer_email,
@@ -107,7 +107,7 @@ def notify():
         resp = requests.post(
             validate_url,
             data={**form_data, 'signature': received_sig},
-            headers={'User-Agent': 'Memory Lane Prints ITN'},
+            headers={'User-Agent': 'uBuhle Prints Studio ITN'},
             timeout=10,
         )
         if resp.text.strip().upper() != 'VALID':

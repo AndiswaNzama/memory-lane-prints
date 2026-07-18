@@ -1,5 +1,5 @@
-{% extends "base.html" %}
-{% block title %}Our Work | Memory Lane Prints{% endblock %}
+﻿{% extends "base.html" %}
+{% block title %}Our Work | uBuhle Prints Studio{% endblock %}
 
 {% block head %}
 <meta name="description" content="Browse our gallery of personalised photo books handcrafted for South African families, couples, and milestone moments." />
@@ -36,7 +36,7 @@
     <div class="gallery-grid">
       {% for img in images %}
       <div class="gallery-item">
-        <img src="{{ img.cloudinary_url }}" alt="{{ img.caption or 'Memory Lane Prints photo book' }}" loading="lazy" />
+        <img src="{{ img.cloudinary_url }}" alt="{{ img.caption or 'uBuhle Prints Studio photo book' }}" loading="lazy" />
         {% if img.caption %}
         <div class="gallery-caption">{{ img.caption }}</div>
         {% endif %}

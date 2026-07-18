@@ -1,4 +1,4 @@
-import csv
+﻿import csv
 import io
 import json
 import functools
@@ -375,7 +375,7 @@ def settings():
                            mail_port         = get_setting('mail_port', '587'),
                            mail_use_tls      = get_setting('mail_use_tls', 'true') == 'true',
                            mail_username     = get_setting('mail_username'),
-                           mail_sender_name  = get_setting('mail_sender_name', 'Memory Lane Prints'),
+                           mail_sender_name  = get_setting('mail_sender_name', 'uBuhle Prints Studio'),
                            about_photo_url   = get_setting('about_photo_url'),
                            max_active_orders = get_setting('max_active_orders'))
 
