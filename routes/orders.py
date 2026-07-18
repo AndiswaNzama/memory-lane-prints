@@ -147,6 +147,7 @@ def submit_order():
         closing_message=form.get('closing_message', '').strip() or None,
         is_gift=bool(form.get('is_gift')),
         gift_message=form.get('gift_message', '').strip() or None,
+        page_layout=form.get('page_layout', '').strip() or None,
         coupon_code=applied_coupon.code if applied_coupon else None,
         discount_amount=discount_amount,
         subtotal=subtotal,

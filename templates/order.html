@@ -19,14 +19,46 @@
   .upload-area:hover, .upload-area.drag-over { background: var(--beige-100); }
   .upload-area input[type="file"] { display: none; }
   .upload-area [data-lucide].icon-xl { display: block; margin: 0 auto .75rem; }
-  .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-  .preview-item { position: relative; border: var(--border); background: var(--warm-white); }
-  .preview-item-thumb { position: relative; aspect-ratio: 1; overflow: hidden; }
-  .preview-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .preview-remove { position: absolute; top: 6px; right: 6px; background: rgba(34,24,10,.7); color: #fff; border: none; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .photo-caption { display: block; width: 100%; border: none; border-top: 1px solid var(--beige-200); padding: .4rem .5rem; font-size: .75rem; font-family: var(--font-sans); color: var(--brown-700); background: transparent; outline: none; box-sizing: border-box; resize: none; }
-  .photo-caption::placeholder { color: var(--gray-400); }
   .upload-progress { margin-top: .75rem; font-size: .85rem; color: var(--gold-dark); }
+  /* Photo pool */
+  .photo-pool { display: flex; flex-wrap: wrap; gap: .5rem; padding: .875rem; background: var(--beige-50); border: 1px solid var(--beige-200); min-height: 88px; }
+  .pool-photo { width: 76px; height: 76px; position: relative; cursor: grab; flex-shrink: 0; border: 2px solid transparent; transition: border-color .15s; }
+  .pool-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pool-photo.selected { border-color: var(--gold); }
+  .pool-photo.dragging { opacity: .4; }
+  .pool-placed-badge { position: absolute; bottom: 3px; left: 3px; background: var(--gold-dark); color: #fff; font-size: 9px; font-weight: 600; padding: 1px 5px; pointer-events: none; }
+  .pool-remove-btn { position: absolute; top: 2px; right: 2px; background: rgba(34,24,10,.8); color: #fff; border: none; width: 18px; height: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; z-index: 2; }
+  .arrange-hint { font-size: .78rem; color: var(--gray-400); margin: .35rem 0 .75rem; line-height: 1.5; }
+  /* Page canvas */
+  .page-card { border: 1px solid var(--beige-200); margin-bottom: 1.25rem; background: var(--warm-white); }
+  .page-card-head { display: flex; align-items: center; gap: .5rem; padding: .6rem .875rem; background: var(--beige-50); border-bottom: 1px solid var(--beige-200); flex-wrap: wrap; }
+  .page-num { font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-400); flex-shrink: 0; }
+  .layout-btns { display: flex; gap: .3rem; flex-wrap: wrap; }
+  .layout-btn { padding: .25rem .45rem; border: 1px solid var(--beige-300); background: var(--warm-white); cursor: pointer; font-size: .62rem; color: var(--gray-400); transition: all .15s; display: flex; flex-direction: column; align-items: center; gap: .18rem; }
+  .layout-btn:hover { border-color: var(--beige-400); color: var(--brown-700); }
+  .layout-btn.active { border-color: var(--gold-dark); color: var(--brown-700); background: var(--beige-100); }
+  .page-remove-btn { margin-left: auto; background: none; border: none; cursor: pointer; color: var(--gray-400); font-size: 1rem; line-height: 1; padding: .1rem .3rem; transition: color .15s; flex-shrink: 0; }
+  .page-remove-btn:hover { color: #991B1B; }
+  .page-spread { display: grid; gap: 3px; padding: .875rem; background: var(--cream); }
+  .page-spread[data-layout="full"]     { grid-template-columns: 1fr; }
+  .page-spread[data-layout="half"]     { grid-template-columns: 1fr 1fr; }
+  .page-spread[data-layout="thirds"]   { grid-template-columns: 1fr 1fr 1fr; }
+  .page-spread[data-layout="feature"]  { grid-template-columns: 2fr 1fr; }
+  .page-spread[data-layout="quad"]     { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+  .page-spread[data-layout="triptych"] { grid-template-columns: 1fr 1fr; }
+  .page-spread[data-layout="triptych"] .page-slot:first-child { grid-column: 1 / -1; }
+  .page-slot { background: var(--warm-white); border: 1px dashed var(--beige-300); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; cursor: pointer; transition: background .12s, border-color .12s; min-height: 100px; aspect-ratio: 1; }
+  .page-spread[data-layout="full"] .page-slot { aspect-ratio: 4/3; }
+  .page-spread[data-layout="triptych"] .page-slot:first-child { aspect-ratio: 2/1; }
+  .page-slot.drag-over { background: var(--beige-100); border-color: var(--gold); border-style: solid; }
+  .page-slot.has-photo { cursor: default; border-style: solid; border-color: var(--beige-200); }
+  .slot-empty-hint { font-size: .7rem; color: var(--beige-400); text-align: center; padding: .5rem; pointer-events: none; user-select: none; line-height: 1.5; }
+  .page-slot img { width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; inset: 0; }
+  .slot-clear-btn { position: absolute; top: 4px; right: 4px; background: rgba(34,24,10,.78); color: #fff; border: none; width: 22px; height: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 3; font-size: 13px; line-height: 1; }
+  .slot-caption-input { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,.52); color: #fff; font-size: .63rem; padding: .22rem .4rem; border: none; outline: none; font-family: var(--font-sans); }
+  .slot-caption-input::placeholder { color: rgba(255,255,255,.55); }
+  .add-page-btn { width: 100%; padding: .75rem; border: 1px dashed var(--beige-300); background: transparent; cursor: pointer; font-size: .8rem; color: var(--gray-400); transition: all .15s; display: flex; align-items: center; justify-content: center; gap: .4rem; margin-top: .25rem; }
+  .add-page-btn:hover { border-color: var(--gold); color: var(--brown-700); background: var(--beige-50); }
   .order-nav { display: flex; justify-content: space-between; margin-top: 2.5rem; }
   .section-label { font-size: .7rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 1.25rem; display: block; }
   .page-customise-section { border: 1px solid var(--beige-200); padding: 1.5rem; margin: 1.75rem 0 0; background: var(--warm-white); }
@@ -53,9 +85,7 @@
   .gift-toggle-label input[type="checkbox"] { accent-color: var(--gold-dark); width: 15px; height: 15px; flex-shrink: 0; }
   .gift-message-field { margin-top: 1rem; }
   .lowres-warning { background: #FEF3C7; border: 1px solid #FCD34D; padding: .6rem .9rem; font-size: .8rem; color: #92400E; margin-top: .5rem; display: none; }
-  .drag-handle { cursor: grab; color: var(--gray-400); padding: .25rem; display: flex; align-items: center; justify-content: center; }
-  .drag-handle:active { cursor: grabbing; }
-  .sortable-ghost { opacity: .4; }
+  .lowres-warning { background: #FEF3C7; border: 1px solid #FCD34D; padding: .6rem .9rem; font-size: .8rem; color: #92400E; margin-top: .5rem; display: none; }
 </style>
 {% endblock %}
 
@@ -93,6 +123,7 @@
     <form id="orderForm" action="{{ url_for('orders.submit_order') }}" method="POST" {% if at_capacity %}style="display:none;"{% endif %}>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <div id="imageFields"></div>
+      <input type="hidden" name="page_layout" id="pageLayoutField" />
 
       <!-- Step 1: Package -->
       <div class="form-step active" id="step-1">
@@ -134,13 +165,12 @@
         </div>
       </div>
 
-      <!-- Step 2: Photos -->
+      <!-- Step 2: Photos + Layout -->
       <div class="form-step" id="step-2">
         <div class="card">
-          <h2 class="card-title">Upload your photos</h2>
+          <h2 class="card-title">Upload &amp; arrange your photos</h2>
           <p style="color:var(--gray-400); margin-bottom:2rem; font-size:.9rem;">
-            Upload the photos you'd like in your book. Accepted: JPG, PNG, HEIC, WEBP.
-            For best quality, use photos at least 1MB each.
+            Upload your photos, then arrange them into pages — just like laying out a magazine spread.
           </p>
 
           <div class="upload-area" id="uploadArea">
@@ -150,19 +180,35 @@
             <p style="font-size:.8rem; color:var(--gray-400);">or drag and drop here</p>
             <p style="font-size:.75rem; color:var(--beige-400); margin-top:.5rem; letter-spacing:.04em;">JPG · PNG · HEIC · WEBP · up to 20MB each</p>
           </div>
-
           <div id="uploadStatus" class="upload-progress"></div>
-          <div id="previewGrid" class="preview-grid"></div>
-          <p id="reorderHint" style="display:none; font-size:.75rem; color:var(--gray-400); margin-top:.5rem; text-align:center; letter-spacing:.03em;">
-            <i data-lucide="move" style="width:12px;height:12px;display:inline;vertical-align:middle;"></i>
-            Drag photos to reorder them
-          </p>
 
-          <div class="order-nav">
+          <!-- Arrange section — shown after first upload -->
+          <div id="photoArrangeSection" style="display:none; margin-top:2rem;">
+
+            <span class="section-label">
+              Your photos <span id="poolCount" style="font-weight:300; opacity:.6;"></span>
+            </span>
+            <p class="arrange-hint">
+              Drag a photo onto a page slot to place it — or tap a photo to select it, then tap an empty slot.
+            </p>
+            <div id="photoPool" class="photo-pool"></div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:2rem; margin-bottom:.75rem;">
+              <span class="section-label" style="margin-bottom:0;">Your pages</span>
+              <span style="font-size:.72rem; color:var(--gray-400);">Pick a layout for each spread</span>
+            </div>
+            <div id="pageCanvas"></div>
+            <button type="button" class="add-page-btn" onclick="addPage()">
+              + Add another page
+            </button>
+
+          </div>
+
+          <div class="order-nav" style="margin-top:2rem;">
             <button type="button" class="btn btn-outline" onclick="goToStep(1)">
               <i data-lucide="arrow-left"></i> Back
             </button>
-            <button type="button" class="btn btn-primary" onclick="validateUploadsAndNext()">
+            <button type="button" class="btn btn-primary" onclick="validateAndNext()">
               Your Details <i data-lucide="arrow-right"></i>
             </button>
           </div>
@@ -321,7 +367,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
 const UPLOAD_URL   = "{{ url_for('orders.upload_image') }}";
 const COUPON_URL   = "{{ url_for('orders.validate_coupon') }}";
@@ -329,7 +374,6 @@ const CSRF_TOKEN   = "{{ csrf_token() }}";
 const PACKAGE_DATA = {{ packages | tojson }};
 const ADDON_DATA   = {{ addons | tojson }};
 let appliedDiscount = 0;
-let uploadedImages = [];
 
 // ---- Progress save ----
 const PROGRESS_KEY = 'mlp_order_progress';
@@ -428,14 +472,233 @@ function goToStep(n) {
   if (n === 3) updateOrderSummary();
 }
 
-function validateUploadsAndNext() {
-  if (uploadedImages.length === 0) {
+// ========== PHOTO POOL + LAYOUT BUILDER ==========
+
+const LAYOUTS = {
+  full:     { label: 'Full page',    slots: 1 },
+  half:     { label: 'Side by side', slots: 2 },
+  thirds:   { label: 'Three across', slots: 3 },
+  feature:  { label: 'Feature',      slots: 2 },
+  quad:     { label: '2×2 grid',     slots: 4 },
+  triptych: { label: '1 + two',      slots: 3 },
+};
+
+const LAYOUT_ICONS = {
+  full:     '<svg width="22" height="14" viewBox="0 0 22 14" fill="none"><rect x=".5" y=".5" width="21" height="13" stroke="currentColor"/></svg>',
+  half:     '<svg width="22" height="14" viewBox="0 0 22 14" fill="none"><rect x=".5" y=".5" width="21" height="13" stroke="currentColor"/><line x1="11" y1="0" x2="11" y2="14" stroke="currentColor"/></svg>',
+  thirds:   '<svg width="22" height="14" viewBox="0 0 22 14" fill="none"><rect x=".5" y=".5" width="21" height="13" stroke="currentColor"/><line x1="7.5" y1="0" x2="7.5" y2="14" stroke="currentColor"/><line x1="14.5" y1="0" x2="14.5" y2="14" stroke="currentColor"/></svg>',
+  feature:  '<svg width="22" height="14" viewBox="0 0 22 14" fill="none"><rect x=".5" y=".5" width="21" height="13" stroke="currentColor"/><line x1="14" y1="0" x2="14" y2="14" stroke="currentColor"/></svg>',
+  quad:     '<svg width="22" height="14" viewBox="0 0 22 14" fill="none"><rect x=".5" y=".5" width="21" height="13" stroke="currentColor"/><line x1="11" y1="0" x2="11" y2="14" stroke="currentColor"/><line x1="0" y1="7" x2="22" y2="7" stroke="currentColor"/></svg>',
+  triptych: '<svg width="22" height="14" viewBox="0 0 22 14" fill="none"><rect x=".5" y=".5" width="21" height="13" stroke="currentColor"/><line x1="0" y1="7" x2="22" y2="7" stroke="currentColor"/><line x1="11" y1="7" x2="11" y2="14" stroke="currentColor"/></svg>',
+};
+
+// pool: { [publicId]: { url, filename, objectUrl } }
+let pool = {};
+// pages: [{ layout: string, slots: [publicId|null, ...] }]
+let pages = [];
+let selectedPoolId = null;
+let draggingId = null;
+
+function addToPool(data, objectUrl) {
+  pool[data.public_id] = { url: data.url, filename: data.filename, objectUrl };
+  if (pages.length === 0) addPage('half', false);
+  renderPool();
+  document.getElementById('photoArrangeSection').style.display = '';
+  lucide.createIcons();
+}
+
+function removeFromPool(pid) {
+  delete pool[pid];
+  pages.forEach(p => { p.slots = p.slots.map(s => s === pid ? null : s); });
+  if (selectedPoolId === pid) selectedPoolId = null;
+  if (Object.keys(pool).length === 0) {
+    pages = [];
+    document.getElementById('photoArrangeSection').style.display = 'none';
+  }
+  renderAll();
+}
+
+function renderPool() {
+  const poolEl = document.getElementById('photoPool');
+  poolEl.innerHTML = '';
+  Object.entries(pool).forEach(([pid, info]) => {
+    const isPlaced = pages.some(p => p.slots.includes(pid));
+    const item = document.createElement('div');
+    item.className = 'pool-photo' + (pid === selectedPoolId ? ' selected' : '');
+    item.dataset.pid = pid;
+    item.draggable = true;
+    item.innerHTML = `
+      <img src="${info.objectUrl}" alt="${info.filename}" />
+      ${isPlaced ? '<span class="pool-placed-badge">placed</span>' : ''}
+      <button type="button" class="pool-remove-btn" title="Remove" onclick="event.stopPropagation();removeFromPool('${pid}')">&times;</button>
+    `;
+    item.addEventListener('click', () => {
+      selectedPoolId = selectedPoolId === pid ? null : pid;
+      renderPool();
+    });
+    item.addEventListener('dragstart', e => {
+      draggingId = pid;
+      item.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', pid);
+    });
+    item.addEventListener('dragend', () => {
+      draggingId = null;
+      item.classList.remove('dragging');
+    });
+    poolEl.appendChild(item);
+  });
+  const count = Object.keys(pool).length;
+  const el = document.getElementById('poolCount');
+  if (el) el.textContent = count ? `(${count})` : '';
+}
+
+function addPage(layout, render) {
+  if (layout === undefined) layout = 'half';
+  if (render === undefined) render = true;
+  pages.push({ layout, slots: Array(LAYOUTS[layout].slots).fill(null) });
+  if (render) renderPages();
+}
+
+function removePage(idx) {
+  pages.splice(idx, 1);
+  renderPages();
+}
+
+function changeLayout(idx, newLayout) {
+  const old = pages[idx].slots;
+  const n = LAYOUTS[newLayout].slots;
+  pages[idx] = { layout: newLayout, slots: Array(n).fill(null).map((_, i) => old[i] || null) };
+  renderPages();
+}
+
+function placePhoto(pageIdx, slotIdx, pid) {
+  // Remove from any existing slot
+  pages.forEach((p, pi) => {
+    p.slots = p.slots.map((s, si) => (s === pid && !(pi === pageIdx && si === slotIdx)) ? null : s);
+  });
+  pages[pageIdx].slots[slotIdx] = pid;
+  selectedPoolId = null;
+  renderAll();
+}
+
+function clearSlot(pageIdx, slotIdx) {
+  pages[pageIdx].slots[slotIdx] = null;
+  renderAll();
+}
+
+function renderAll() { renderPool(); renderPages(); }
+
+function renderPages() {
+  const canvas = document.getElementById('pageCanvas');
+  canvas.innerHTML = '';
+  pages.forEach((page, idx) => {
+    const card = document.createElement('div');
+    card.className = 'page-card';
+
+    // Header
+    const head = document.createElement('div');
+    head.className = 'page-card-head';
+    head.innerHTML = `<span class="page-num">Page ${idx + 1}</span>`;
+
+    const btns = document.createElement('div');
+    btns.className = 'layout-btns';
+    Object.entries(LAYOUTS).forEach(([key, def]) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'layout-btn' + (page.layout === key ? ' active' : '');
+      b.title = def.label;
+      b.innerHTML = LAYOUT_ICONS[key] + '<span>' + def.label + '</span>';
+      b.addEventListener('click', () => changeLayout(idx, key));
+      btns.appendChild(b);
+    });
+    head.appendChild(btns);
+
+    if (pages.length > 1) {
+      const rem = document.createElement('button');
+      rem.type = 'button';
+      rem.className = 'page-remove-btn';
+      rem.title = 'Remove page';
+      rem.innerHTML = '&times;';
+      rem.addEventListener('click', () => removePage(idx));
+      head.appendChild(rem);
+    }
+    card.appendChild(head);
+
+    // Spread
+    const spread = document.createElement('div');
+    spread.className = 'page-spread';
+    spread.dataset.layout = page.layout;
+
+    page.slots.forEach((pid, slotIdx) => {
+      const slot = document.createElement('div');
+      const info = pid ? pool[pid] : null;
+      slot.className = 'page-slot' + (info ? ' has-photo' : '');
+
+      if (info) {
+        slot.innerHTML = `
+          <img src="${info.objectUrl}" alt="${info.filename}" />
+          <button type="button" class="slot-clear-btn" onclick="clearSlot(${idx},${slotIdx})" title="Remove">&times;</button>
+          <input class="slot-caption-input" type="text" placeholder="Add a caption…" maxlength="150" data-pid="${pid}" />
+        `;
+      } else {
+        slot.innerHTML = `<span class="slot-empty-hint">Drop photo here<br><small>or tap to place</small></span>`;
+        slot.addEventListener('click', () => {
+          if (selectedPoolId && pool[selectedPoolId]) placePhoto(idx, slotIdx, selectedPoolId);
+        });
+      }
+
+      slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+      slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+      slot.addEventListener('drop', e => {
+        e.preventDefault();
+        slot.classList.remove('drag-over');
+        const pid = e.dataTransfer.getData('text/plain');
+        if (pid && pool[pid]) placePhoto(idx, slotIdx, pid);
+      });
+
+      spread.appendChild(slot);
+    });
+
+    card.appendChild(spread);
+    canvas.appendChild(card);
+  });
+}
+
+function syncHiddenFields() {
+  // Flat image fields for all uploaded photos (creates OrderImage records)
+  const container = document.getElementById('imageFields');
+  container.innerHTML = '';
+  Object.entries(pool).forEach(([pid, info]) => {
+    [['image_urls[]', info.url], ['image_public_ids[]', pid],
+     ['image_filenames[]', info.filename], ['image_captions[]', '']].forEach(([name, val]) => {
+      const el = document.createElement('input');
+      el.type = 'hidden'; el.name = name; el.value = val;
+      container.appendChild(el);
+    });
+  });
+
+  // Page layout JSON (includes captions from slots)
+  const layout = pages.map(page => ({
+    layout: page.layout,
+    slots: page.slots.map(pid => {
+      if (!pid || !pool[pid]) return null;
+      const cap = document.querySelector(`.slot-caption-input[data-pid="${pid}"]`);
+      return { public_id: pid, url: pool[pid].url, filename: pool[pid].filename, caption: cap ? cap.value.trim() : '' };
+    }),
+  }));
+  document.getElementById('pageLayoutField').value = JSON.stringify(layout);
+}
+
+function validateAndNext() {
+  if (Object.keys(pool).length === 0) {
     alert('Please upload at least one photo before continuing.');
     return;
   }
+  syncHiddenFields();
   goToStep(3);
 }
 
+// ---- Upload ----
 async function uploadFile(file) {
   const fd = new FormData();
   fd.append('image', file);
@@ -445,69 +708,18 @@ async function uploadFile(file) {
   return res.json();
 }
 
-function addPreview(data, objectUrl) {
-  const grid = document.getElementById('previewGrid');
-  const item = document.createElement('div');
-  item.className = 'preview-item';
-  item.dataset.publicId = data.public_id;
-  item.innerHTML = `
-    <div class="preview-item-thumb">
-      <img src="${objectUrl}" alt="${data.filename}" />
-      <button type="button" class="preview-remove" onclick="removeImage(this,'${data.public_id}')" title="Remove"><i data-lucide="x"></i></button>
-      <div class="drag-handle" title="Drag to reorder"><i data-lucide="grip-vertical"></i></div>
-    </div>
-    <input type="text" class="photo-caption" placeholder="Add a caption..." maxlength="150" />
-  `;
-  grid.appendChild(item);
-  lucide.createIcons();
-  document.getElementById('reorderHint').style.display = grid.children.length > 1 ? 'block' : 'none';
-}
-
-function removeImage(btn, publicId) {
-  uploadedImages = uploadedImages.filter(i => i.public_id !== publicId);
-  btn.closest('.preview-item').remove();
-  syncHiddenFields();
-  const grid = document.getElementById('previewGrid');
-  document.getElementById('reorderHint').style.display = grid.children.length > 1 ? 'block' : 'none';
-}
-
-function syncHiddenFields() {
-  const container = document.getElementById('imageFields');
-  container.innerHTML = '';
-  // Read order from DOM so drag-reorder is respected
-  const items = document.querySelectorAll('#previewGrid .preview-item');
-  items.forEach(item => {
-    const pid = item.dataset.publicId;
-    const img = uploadedImages.find(i => i.public_id === pid);
-    if (!img) return;
-    const caption = item.querySelector('.photo-caption')?.value || '';
-    [
-      ['image_urls[]', img.url],
-      ['image_public_ids[]', img.public_id],
-      ['image_filenames[]', img.filename],
-      ['image_captions[]', caption],
-    ].forEach(([name, val]) => {
-      const el = document.createElement('input');
-      el.type = 'hidden'; el.name = name; el.value = val;
-      container.appendChild(el);
-    });
-  });
-}
-
 async function handleFiles(files) {
   const status = document.getElementById('uploadStatus');
   const total = files.length;
   let done = 0;
-  status.textContent = `Uploading 0 of ${total}...`;
+  status.textContent = `Uploading 0 of ${total}…`;
   for (const file of Array.from(files)) {
     try {
       const objectUrl = URL.createObjectURL(file);
       const data = await uploadFile(file);
-      uploadedImages.push(data);
-      syncHiddenFields();
-      addPreview(data, objectUrl);
+      addToPool(data, objectUrl);
       done++;
-      status.textContent = done < total ? `Uploading ${done} of ${total}...` : `${total} photo${total !== 1 ? 's' : ''} uploaded successfully.`;
+      status.textContent = done < total ? `Uploading ${done} of ${total}…` : `${total} photo${total !== 1 ? 's' : ''} uploaded.`;
     } catch (e) {
       status.textContent = `Could not upload ${file.name}: ${e.message}`;
     }
@@ -521,14 +733,6 @@ photoInput.addEventListener('change', e => handleFiles(e.target.files));
 uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
 uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
 uploadArea.addEventListener('drop', e => { e.preventDefault(); uploadArea.classList.remove('drag-over'); handleFiles(e.dataTransfer.files); });
-
-// ---- Sortable drag-to-reorder ----
-Sortable.create(document.getElementById('previewGrid'), {
-  animation: 150,
-  ghostClass: 'sortable-ghost',
-  handle: '.drag-handle',
-  onEnd: syncHiddenFields,
-});
 
 document.getElementById('orderForm').addEventListener('submit', () => {
   syncHiddenFields();

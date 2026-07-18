@@ -161,6 +161,7 @@ class Order(db.Model):
     tracking_number    = db.Column(db.String(100))
     admin_notes        = db.Column(db.Text)
     print_checklist    = db.Column(db.Text)
+    page_layout        = db.Column(db.Text)
     reminder_sent_at   = db.Column(db.DateTime)
 
     created_at = db.Column(db.DateTime, default=_now)
@@ -270,3 +271,5 @@ class Newsletter(db.Model):
     subscribed_at = db.Column(db.DateTime, default=_now)
     is_active     = db.Column(db.Boolean, default=True)
     source        = db.Column(db.String(50), default='footer')
+
+vc

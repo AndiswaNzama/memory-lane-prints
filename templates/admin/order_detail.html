@@ -251,6 +251,45 @@
 </div>
 {% endif %}
 
+<!-- Page Layout -->
+{% if order.page_layout %}
+{% set layout_pages = order.page_layout | fromjson %}
+<div class="card" style="margin-top:1.5rem;">
+  <div class="card-header">
+    <h2 style="font-size:.95rem; display:flex; align-items:center; gap:.5rem;">
+      <i data-lucide="layout" style="width:15px;height:15px;color:var(--gold-dark);"></i>
+      Customer's Page Layout
+    </h2>
+  </div>
+  <div class="card-body" style="overflow-x:auto;">
+    {% for page in layout_pages %}
+    <div style="margin-bottom:1.5rem;">
+      <p style="font-size:.72rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gray-400); margin-bottom:.5rem;">
+        Page {{ loop.index }} — {{ page.layout | replace('_',' ') | title }}
+      </p>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        {% for slot in page.slots %}
+        {% if slot and slot.url %}
+        <div style="position:relative; width:120px; flex-shrink:0;">
+          <img src="{{ slot.url }}" alt="{{ slot.filename }}"
+               style="width:120px; height:90px; object-fit:cover; display:block; border:1px solid var(--beige-200);" />
+          {% if slot.caption %}
+          <p style="font-size:.7rem; color:var(--gray-400); margin:.3rem 0 0; line-height:1.3;">{{ slot.caption }}</p>
+          {% endif %}
+        </div>
+        {% else %}
+        <div style="width:120px; height:90px; background:var(--beige-50); border:1px dashed var(--beige-300); display:flex; align-items:center; justify-content:center;">
+          <span style="font-size:.65rem; color:var(--beige-400);">empty</span>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
 <!-- Print Checklist -->
 {% set checklist_items = [
   ('photos_reviewed',   'Photos reviewed and quality checked'),
